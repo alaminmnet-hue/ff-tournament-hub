@@ -3073,9 +3073,9 @@
             const txnId = document.getElementById('transactionId').value.trim();
             const screenshotFile = document.getElementById('addMoneyScreenshot').files[0];
 
-            // Validation: Min ₹99, Max ₹10,000
-            if (amount < 99) {
-                showAlert('addMoneyError', 'Minimum amount is ₹99');
+            // Validation: Min ₹20, Max ₹10,000
+            if (amount < 20) {
+                showAlert('addMoneyError', 'Minimum deposit amount is ₹20');
                 return;
             }
 
@@ -3241,8 +3241,8 @@
                 return;
             }
 
-            // Calculate 2% charges
-            const charges = requestedAmount * 0.02;
+            // Calculate 5% charges
+            const charges = requestedAmount * 0.05;
             const netAmount = requestedAmount - charges;
             const finalDeduction = requestedAmount; // Full amount deducted from wallet
 
@@ -3288,7 +3288,7 @@
             const confirmMessage = `Confirm withdrawal?
 
 Requested: ₹${requestedAmount.toFixed(2)}
-Charges (2%): -₹${charges.toFixed(2)}
+Charges (5%): -₹${charges.toFixed(2)}
 You receive: ₹${netAmount.toFixed(2)}`;
             
             if (!confirm(confirmMessage)) {
@@ -3312,7 +3312,7 @@ You receive: ₹${netAmount.toFixed(2)}`;
                         user_id: currentUser.id,
                         type: 'debit',
                         amount: requestedAmount,
-                        description: `Withdrawal request (₹${netAmount.toFixed(2)} + ₹${charges.toFixed(2)} charges)`,
+                        description: `Withdrawal request (₹${netAmount.toFixed(2)} + ₹${charges.toFixed(2)} charges 5%)`,
                         status: 'pending'
                     }]);
 
@@ -3321,7 +3321,7 @@ You receive: ₹${netAmount.toFixed(2)}`;
                 alert(`Withdrawal request submitted! ✓
 
 Requested: ₹${requestedAmount.toFixed(2)}
-Charges (2%): ₹${charges.toFixed(2)}
+Charges (5%): ₹${charges.toFixed(2)}
 Net Amount: ₹${netAmount.toFixed(2)}
 
 Your request will be processed by admin.`);
