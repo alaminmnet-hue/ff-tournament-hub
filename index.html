@@ -1503,9 +1503,13 @@
                             📋 Copy Code
                         </button>
                         <button class="btn btn-primary" onclick="shareViaWhatsApp()" style="background: linear-gradient(135deg, #25D366, #128C7E); flex: 1;">
-                            <span style="font-size: 18px;">📱</span> Share on WhatsApp
+                            <span style="font-size: 18px;">📱</span> Share via WhatsApp
                         </button>
                     </div>
+
+                    <button class="btn btn-outline" onclick="shareReferralLink()" style="margin-top: 10px; width: 100%;">
+                        🔗 Share Link (Other Apps)
+                    </button>
 
                     <div style="margin-top: 15px; padding: 12px; background: rgba(37, 211, 102, 0.1); border-radius: 8px; border: 1px solid rgba(37, 211, 102, 0.3);">
                         <div style="font-size: 13px; color: var(--text-secondary); text-align: center;">
@@ -3454,26 +3458,79 @@ Both of us will get bonus! 🎁`;
             }
 
             const code = currentUserData.referral_code;
-            const appUrl = window.location.origin + window.location.pathname;
-            const referralLink = `${appUrl}?ref=${code}`;
+            // Use full Vercel URL for sharing
+            const referralLink = `https://ff-tournament-hub.vercel.app/?ref=${code}`;
             
             const message = `🔥 *Join FF Tournament Hub!*
 
 🎮 Play Free Fire Tournaments
-💰 Win Real Money Prizes
+💰 Win Real Money Prizes  
 🏆 Compete with Top Players
 
 ✨ *Use my referral code:* ${code}
 
 🎁 *Get ₹11 Signup Bonus!*
 
-👉 Join now: ${referralLink}`;
+👉 *Click here to join:*
+${referralLink}`;
 
-            // WhatsApp deep link
+            // WhatsApp share URL
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
             
             // Open WhatsApp
-            window.open(whatsappUrl, '_blank');
+            if (window.ReactNativeWebView) {
+                // If running in WebView/App
+                window.ReactNativeWebView.postMessage(JSON.stringify({
+                    type: 'share',
+                    url: whatsappUrl
+                }));
+            } else {
+                // Browser or regular WebView
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        // Share via Web Share API (works with all apps)
+        async function shareReferralLink() {
+            if (!currentUserData || !currentUserData.referral_code) {
+                alert('Please login to share your referral code!');
+                return;
+            }
+
+            const code = currentUserData.referral_code;
+            const referralLink = `https://ff-tournament-hub.vercel.app/?ref=${code}`;
+            
+            const shareData = {
+                title: 'Join FF Tournament Hub!',
+                text: `🔥 Join FF Tournament Hub!
+
+🎮 Play Free Fire tournaments and win real money!
+🎁 Use my code: ${code} and get ₹11 bonus!
+
+👇 Click to join:`,
+                url: referralLink
+            };
+
+            try {
+                // Check if Web Share API is available
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback: Copy link to clipboard
+                    await navigator.clipboard.writeText(referralLink);
+                    alert('✅ Link copied to clipboard!\n\nShare it anywhere you want!');
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    // If share failed, copy to clipboard
+                    try {
+                        await navigator.clipboard.writeText(referralLink);
+                        alert('✅ Link copied!\n\nPaste and share it anywhere!');
+                    } catch (clipError) {
+                        alert('⚠️ Could not share. Please copy manually:\n\n' + referralLink);
+                    }
+                }
+            }
         }
 
         async function processReferralBonus(referralCode, newUserId) {
