@@ -1,0 +1,4103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>FF Tournament Hub - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff4655;
+            --primary-dark: #e63946;
+            --secondary: #ffa500;
+            --bg-dark: #0d0d1e;
+            --bg-card: #1a1a2e;
+            --bg-lighter: #252541;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0c3;
+            --success: #00ff88;
+            --error: #ff4655;
+            --warning: #ffa500;
+            --border: #2d2d44;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+        }
+
+        .login-container {
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 30px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg-lighter);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        select.form-input {
+            cursor: pointer;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 70, 85, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-lighter);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--bg-dark);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background: rgba(255, 70, 85, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* Admin Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .sidebar-logo-text h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-logo-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .menu-section-title {
+            padding: 0 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-lighter);
+            color: var(--text-primary);
+        }
+
+        .menu-item.active {
+            background: var(--bg-lighter);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary);
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            background: var(--error);
+            color: white;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            display: none; /* Hidden by default */
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            background: var(--bg-dark);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-card);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .top-bar-left h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .top-bar-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .admin-profile:hover {
+            background: var(--bg-lighter);
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .admin-info p {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .admin-info span {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 40px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.blue {
+            background: rgba(66, 153, 225, 0.2);
+            color: #4299e1;
+        }
+
+        .stat-icon.green {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success);
+        }
+
+        .stat-icon.orange {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--secondary);
+        }
+
+        .stat-icon.red {
+            background: rgba(255, 70, 85, 0.2);
+            color: var(--error);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-lighter);
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-lighter);
+        }
+
+        /* Badge */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(255, 70, 85, 0.2);
+            color: var(--error);
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-info {
+            background: rgba(66, 153, 225, 0.2);
+            color: #4299e1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+        }
+
+        .modal-content.large {
+            max-width: 900px;
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-lighter);
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn .spinner {
+            width: 16px;
+            height: 16px;
+            border-width: 2px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            padding-left: 45px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: rgba(255, 70, 85, 0.05);
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mb-30 {
+            margin-bottom: 30px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-lighter);
+        }
+
+        /* Responsive */
+        
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            z-index: 200;
+        }
+
+        .mobile-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 11px;
+            border-radius: 8px;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--primary);
+            background: rgba(255, 70, 85, 0.1);
+        }
+
+        .mobile-nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .mobile-nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            background: var(--error);
+            color: white;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        /* Hamburger Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 150;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .mobile-menu-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Sidebar Mobile Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 90;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Tablet */
+        @media (max-width: 1024px) {
+            :root {
+                --sidebar-width: 80px;
+            }
+
+            .sidebar {
+                width: 80px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .sidebar-logo-text,
+            .menu-text,
+            .menu-badge,
+            .menu-section-title {
+                display: none;
+            }
+
+            .menu-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .menu-item.active::before {
+                width: 100%;
+                height: 3px;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: auto;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .top-bar {
+                padding: 15px 25px;
+            }
+
+            .content-area {
+                padding: 25px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                width: 260px;
+            }
+
+            .sidebar.mobile-active {
+                transform: translateX(0);
+            }
+
+            .sidebar-logo-text,
+            .menu-text,
+            .menu-badge,
+            .menu-section-title {
+                display: block;
+            }
+
+            .menu-item {
+                justify-content: flex-start;
+                padding: 12px 20px;
+            }
+
+            .menu-item.active::before {
+                width: 3px;
+                height: 100%;
+                left: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                margin-bottom: 70px;
+            }
+
+            .content-area {
+                padding: 15px;
+            }
+
+            .top-bar {
+                padding: 12px 15px;
+                padding-left: 65px;
+            }
+
+            .top-bar-left h1 {
+                font-size: 20px;
+            }
+
+            .top-bar-subtitle {
+                display: none;
+            }
+
+            .admin-info {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header {
+                padding: 15px 20px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                margin: 10px;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 20px;
+            }
+
+            .mobile-bottom-nav {
+                display: block;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+
+            .btn-sm {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-buttons .btn-sm {
+                width: 100%;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .top-bar-left h1 {
+                font-size: 18px;
+            }
+
+            .content-area {
+                padding: 12px;
+            }
+
+            .stats-grid {
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 20px 15px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            .login-container {
+                padding: 30px 20px;
+                margin: 15px;
+            }
+
+            .login-logo {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+                margin: 0 auto 20px;
+            }
+
+            .login-title {
+                font-size: 26px;
+            }
+
+            .login-subtitle {
+                font-size: 13px;
+                margin-bottom: 30px;
+            }
+
+            .mobile-nav-grid {
+                gap: 2px;
+            }
+
+            .mobile-nav-item {
+                font-size: 10px;
+                padding: 6px 2px;
+            }
+
+            .mobile-nav-icon {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div class="screen active" id="loginScreen">
+        <div class="login-screen">
+            <div class="login-container">
+                <div class="login-logo">🔐</div>
+                <h1 class="login-title">Admin Panel</h1>
+                <p class="login-subtitle">FF Tournament Hub Management</p>
+
+                <div class="alert alert-error" id="loginError"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="adminEmail" placeholder="admin@fftournament.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="adminPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span id="loginBtnText">Login to Dashboard</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div class="screen" id="dashboardScreen">
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">
+                        <div class="sidebar-logo-icon">🔥</div>
+                        <div class="sidebar-logo-text">
+                            <h2>FF Tournament</h2>
+                            <p>Admin Panel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="sidebar-menu">
+                    <div class="menu-section">
+                        <div class="menu-section-title">Main</div>
+                        <div class="menu-item active" onclick="showSection('dashboard')">
+                            <span class="menu-icon">📊</span>
+                            <span class="menu-text">Dashboard</span>
+                        </div>
+                        <div class="menu-item" onclick="showSection('users')">
+                            <span class="menu-icon">👥</span>
+                            <span class="menu-text">Users</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-title">Tournament</div>
+                        <div class="menu-item" onclick="showSection('matches')">
+                            <span class="menu-icon">🎮</span>
+                            <span class="menu-text">Matches</span>
+                        </div>
+                        <div class="menu-item" onclick="showSection('results')">
+                            <span class="menu-icon">🏆</span>
+                            <span class="menu-text">Results</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-title">Financial</div>
+                        <div class="menu-item" onclick="showSection('deposits')">
+                            <span class="menu-icon">💰</span>
+                            <span class="menu-text">Deposits</span>
+                            <span class="menu-badge" id="depositBadge">0</span>
+                        </div>
+                        <div class="menu-item" onclick="showSection('withdrawals')">
+                            <span class="menu-icon">💸</span>
+                            <span class="menu-text">Withdrawals</span>
+                            <span class="menu-badge" id="withdrawalBadge">0</span>
+                        </div>
+                        <div class="menu-item" onclick="showSection('transactions')">
+                            <span class="menu-icon">📝</span>
+                            <span class="menu-text">Transactions</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-title">Content</div>
+                        <div class="menu-item" onclick="showSection('banners')">
+                            <span class="menu-icon">🖼️</span>
+                            <span class="menu-text">Banners</span>
+                        </div>
+                        <div class="menu-item" onclick="showSection('announcements')">
+                            <span class="menu-icon">📢</span>
+                            <span class="menu-text">Announcements</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-title">Support</div>
+                        <div class="menu-item" onclick="showSection('tickets')">
+                            <span class="menu-icon">💬</span>
+                            <span class="menu-text">Support Tickets</span>
+                            <span class="menu-badge" id="ticketBadge">0</span>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-title">Settings</div>
+                        <div class="menu-item" onclick="showSection('payment')">
+                            <span class="menu-icon">⚙️</span>
+                            <span class="menu-text">Payment Methods</span>
+                        </div>
+                        <div class="menu-item" onclick="logout()">
+                            <span class="menu-icon">🚪</span>
+                            <span class="menu-text">Logout</span>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div class="top-bar-left">
+                        <h1 id="sectionTitle">Dashboard</h1>
+                        <p class="top-bar-subtitle" id="sectionSubtitle">Overview and analytics</p>
+                    </div>
+                    <div class="top-bar-right">
+                        <div class="admin-profile">
+                            <div class="admin-avatar" id="adminAvatar">A</div>
+                            <div class="admin-info">
+                                <p id="adminName">Admin</p>
+                                <span id="adminRole">Super Admin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Sections -->
+                <div class="content-area">
+                    <!-- DASHBOARD SECTION -->
+                    <div class="content-section active" id="section-dashboard">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-icon blue">👥</div>
+                                </div>
+                                <div class="stat-value" id="totalUsers">0</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-icon green">💰</div>
+                                </div>
+                                <div class="stat-value">₹<span id="totalRevenue">0</span></div>
+                                <div class="stat-label">Total Revenue</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-icon orange">🎮</div>
+                                </div>
+                                <div class="stat-value" id="totalMatches">0</div>
+                                <div class="stat-label">Total Matches</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <div class="stat-icon red">⏳</div>
+                                </div>
+                                <div class="stat-value" id="pendingRequests">0</div>
+                                <div class="stat-label">Pending Requests</div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Recent Users</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentUsers"></div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Recent Transactions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentTransactions"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USERS SECTION -->
+                    <div class="content-section" id="section-users">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">All Users</h3>
+                                <div class="search-box" style="margin: 0; max-width: 300px;">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" class="form-input" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
+                                </div>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Balance</th>
+                                                <th>Joined</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usersTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATCHES SECTION -->
+                    <div class="content-section" id="section-matches">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Tournaments & Matches</h3>
+                                <button class="btn btn-primary btn-sm" onclick="openCreateMatchModal()">
+                                    ➕ Create Match
+                                </button>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Match Title</th>
+                                                <th>Prize Pool</th>
+                                                <th>Entry Fee</th>
+                                                <th>Slots</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="matchesTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESULTS SECTION -->
+                    <div class="content-section" id="section-results">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Match Results</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Match Title</th>
+                                                <th>Date</th>
+                                                <th>Participants</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEPOSITS SECTION -->
+                    <div class="content-section" id="section-deposits">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Deposit Requests</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Amount</th>
+                                                <th>Transaction ID</th>
+                                                <th>Screenshot</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="depositsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WITHDRAWALS SECTION -->
+                    <div class="content-section" id="section-withdrawals">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Withdrawal Requests</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Amount</th>
+                                                <th>Method</th>
+                                                <th>Details</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="withdrawalsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRANSACTIONS SECTION -->
+                    <div class="content-section" id="section-transactions">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">All Transactions</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Description</th>
+                                                <th>Reference</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transactionsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BANNERS SECTION -->
+                    <div class="content-section" id="section-banners">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Banner Management</h3>
+                                <button class="btn btn-primary btn-sm" onclick="openCreateBannerModal()">
+                                    ➕ Create Banner
+                                </button>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Preview</th>
+                                                <th>Title</th>
+                                                <th>Type</th>
+                                                <th>Order</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bannersTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ANNOUNCEMENTS SECTION -->
+                    <div class="content-section" id="section-announcements">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Announcements</h3>
+                                <button class="btn btn-primary btn-sm" onclick="openCreateAnnouncementModal()">
+                                    ➕ Create Announcement
+                                </button>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Message</th>
+                                                <th>Created</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="announcementsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUPPORT TICKETS SECTION -->
+                    <div class="content-section" id="section-tickets">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Support Tickets</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Ticket ID</th>
+                                                <th>User</th>
+                                                <th>Subject</th>
+                                                <th>Created</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ticketsTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT METHODS SECTION -->
+                    <div class="content-section" id="section-payment">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Payment Methods Configuration</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="paymentMethodsForm">
+                                    <div class="form-group">
+                                        <label class="form-label">UPI ID</label>
+                                        <input type="text" class="form-input" id="upiId" placeholder="yourname@paytm" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">QR Code Image URL</label>
+                                        <input type="url" class="form-input" id="qrCodeUrl" placeholder="https://example.com/qr-code.png">
+                                        <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                            Upload QR code to Supabase Storage and paste the public URL here
+                                        </small>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">
+                                        <span id="paymentBtnText">💾 Save Payment Methods</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Create Match Modal -->
+    <div class="modal" id="createMatchModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Match</h3>
+                <button class="modal-close" onclick="closeModal('createMatchModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="createMatchForm">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Match Title *</label>
+                            <input type="text" class="form-input" id="matchTitle" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Match Type *</label>
+                            <select class="form-input" id="matchType" required>
+                                <option value="Solo">Solo</option>
+                                <option value="Duo">Duo</option>
+                                <option value="Squad">Squad</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Prize Pool (₹) *</label>
+                            <input type="number" class="form-input" id="prizePool" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Per Kill Prize (₹)</label>
+                            <input type="number" class="form-input" id="perKillPrize" min="0" step="0.01" value="0" placeholder="e.g., 50">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                🎯 Bonus amount per kill (Optional)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Entry Fee (₹) *</label>
+                            <input type="number" class="form-input" id="entryFee" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Max Players *</label>
+                            <input type="number" class="form-input" id="maxPlayers" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Map *</label>
+                            <select class="form-input" id="matchMap" required>
+                                <option value="Bermuda">Bermuda</option>
+                                <option value="Kalahari">Kalahari</option>
+                                <option value="Purgatory">Purgatory</option>
+                                <option value="Alpine">Alpine</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Match Date & Time *</label>
+                            <input type="datetime-local" class="form-input" id="matchDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Room ID</label>
+                            <input type="text" class="form-input" id="roomId">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Room Password</label>
+                            <input type="text" class="form-input" id="roomPassword">
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" id="matchDescription"></textarea>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1; background: rgba(0, 210, 255, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(0, 210, 255, 0.3);">
+                            <label class="form-label" style="color: var(--primary); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center;">
+                                <span style="font-size: 20px; margin-right: 8px;">🖼️</span>
+                                Match Banner & Homepage Slider
+                            </label>
+                            <div class="form-group">
+                                <label class="form-label">Match Card Banner (Shows in Tournament List)</label>
+                                <input type="url" class="form-input" id="matchCardBanner" placeholder="https://your-image-url.com/match-card.png">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                    🎯 Recommended size: 400x120px - Displays on tournament card
+                                </small>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label class="form-label">Homepage Slider Banner (Optional)</label>
+                                <input type="url" class="form-input" id="matchBannerUrl" placeholder="https://your-image-url.com/slider-banner.png">
+                                <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                    🎠 Recommended size: 400x160px - Creates auto-promotional slider banner
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('createMatchModal')">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <span id="createMatchBtnText">Create Match</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Declare Result Modal -->
+    <div class="modal" id="declareResultModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">Declare Match Results</h3>
+                <button class="modal-close" onclick="closeModal('declareResultModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="resultParticipants"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('declareResultModal')">Cancel</button>
+                    <button class="btn btn-success" onclick="saveMatchResults()">
+                        <span id="saveResultsBtnText">💾 Save Results</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Ticket Modal -->
+    <div class="modal" id="replyTicketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reply to Ticket</h3>
+                <button class="modal-close" onclick="closeModal('replyTicketModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="ticketDetails"></div>
+                <form id="replyTicketForm" class="mt-20">
+                    <div class="form-group">
+                        <label class="form-label">Your Reply</label>
+                        <textarea class="form-input" id="ticketReply" rows="6" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('replyTicketModal')">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <span id="replyTicketBtnText">Send Reply & Close</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="modal" id="leaderboardModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="leaderboardTitle">🏆 Match Leaderboard</h3>
+                <button class="modal-close" onclick="closeModal('leaderboardModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="leaderboardContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Banner Modal -->
+    <div class="modal" id="createBannerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Banner</h3>
+                <button class="modal-close" onclick="closeModal('createBannerModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="createBannerForm">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" id="bannerTitle">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Image URL *</label>
+                        <input type="url" class="form-input" id="bannerImageUrl" required>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                            Upload image to Supabase Storage (recommended size: 400x160px)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Banner Type *</label>
+                        <select class="form-input" id="bannerType" required>
+                            <option value="home">Home Banner</option>
+                            <option value="promotion">Promotion Banner</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" class="form-input" id="bannerOrder" value="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" id="bannerDescription"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('createBannerModal')">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <span id="createBannerBtnText">Create Banner</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div class="modal" id="createAnnouncementModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Announcement</h3>
+                <button class="modal-close" onclick="closeModal('createAnnouncementModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="createAnnouncementForm">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" id="announcementTitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-input" id="announcementMessage" rows="6" required></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('createAnnouncementModal')">Cancel</button>
+                        <button type="submit" class="btn btn-success">
+                            <span id="createAnnouncementBtnText">Create Announcement</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screenshot Viewer Modal -->
+    <div class="modal" id="screenshotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="screenshotModalTitle">Payment Screenshot</h3>
+                <button class="modal-close" onclick="closeModal('screenshotModal')">✕</button>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 30px;">
+                <img id="screenshotModalImage" style="max-width: 100%; max-height: 70vh; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <div class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()">
+        ☰
+    </div>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-grid">
+            <div class="mobile-nav-item active" onclick="showSection('dashboard')">
+                <div class="mobile-nav-icon">📊</div>
+                <div>Dashboard</div>
+            </div>
+            <div class="mobile-nav-item" onclick="showSection('matches')">
+                <div class="mobile-nav-icon">🎮</div>
+                <div>Matches</div>
+            </div>
+            <div class="mobile-nav-item" onclick="showSection('deposits')">
+                <div class="mobile-nav-icon" style="position: relative;">
+                    💰
+                    <span class="mobile-nav-badge" id="mobileDepositBadge">0</span>
+                </div>
+                <div>Deposits</div>
+            </div>
+            <div class="mobile-nav-item" onclick="showSection('withdrawals')">
+                <div class="mobile-nav-icon" style="position: relative;">
+                    💸
+                    <span class="mobile-nav-badge" id="mobileWithdrawalBadge">0</span>
+                </div>
+                <div>Withdraw</div>
+            </div>
+            <div class="mobile-nav-item" onclick="showSection('tickets')">
+                <div class="mobile-nav-icon" style="position: relative;">
+                    💬
+                    <span class="mobile-nav-badge" id="mobileTicketBadge">0</span>
+                </div>
+                <div>Support</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ==========================================
+        // SUPABASE CONFIGURATION
+        // ==========================================
+        // REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS (SAME AS index.html)
+        const SUPABASE_URL = 'https://gafxellwhhrnacymwont.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ang4zZ5T90JwXU2iOxmxjw_4LriiG_z';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ==========================================
+        // GLOBAL STATE
+        // ==========================================
+        let currentAdmin = null;
+        let allUsers = [];
+        let allMatches = [];
+        let currentMatchId = null;
+        let currentTicketId = null;
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        async function checkAuth() {
+            showLoading(true);
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                currentAdmin = session.user;
+                await loadDashboard();
+                showScreen('dashboardScreen');
+            } else {
+                showScreen('loginScreen');
+            }
+            showLoading(false);
+        }
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            showButtonLoading('loginBtnText', true, 'Logging in...');
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                currentAdmin = data.user;
+                await loadDashboard();
+                showScreen('dashboardScreen');
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('loginError', error.message || 'Invalid credentials');
+            } finally {
+                showButtonLoading('loginBtnText', false, 'Login to Dashboard');
+            }
+        });
+
+        async function logout() {
+            if (!confirm('Are you sure you want to logout?')) return;
+            
+            showLoading(true);
+            await supabaseClient.auth.signOut();
+            currentAdmin = null;
+            showScreen('loginScreen');
+            showLoading(false);
+        }
+
+        // ==========================================
+        // DASHBOARD DATA LOADING
+        // ==========================================
+        async function loadDashboard() {
+            // Update admin info
+            document.getElementById('adminName').textContent = currentAdmin.email.split('@')[0];
+            document.getElementById('adminAvatar').textContent = currentAdmin.email[0].toUpperCase();
+
+            // Load all data
+            await Promise.all([
+                loadDashboardStats(),
+                loadUsers(),
+                loadMatches(),
+                loadDeposits(),
+                loadWithdrawals(),
+                loadTransactions(),
+                loadBanners(),
+                loadAnnouncements(),
+                loadSupportTickets()
+            ]);
+        }
+
+        async function loadDashboardStats() {
+            try {
+                // Total Users
+                const { count: userCount } = await supabaseClient
+                    .from('users')
+                    .select('*', { count: 'exact', head: true });
+                document.getElementById('totalUsers').textContent = userCount || 0;
+
+                // Total Revenue (sum of completed entry fees)
+                const { data: transactions } = await supabaseClient
+                    .from('transactions')
+                    .select('amount')
+                    .eq('type', 'debit')
+                    .eq('status', 'completed')
+                    .eq('description', 'Tournament entry fee');
+                
+                const revenue = transactions ? transactions.reduce((sum, t) => sum + t.amount, 0) : 0;
+                document.getElementById('totalRevenue').textContent = revenue.toFixed(2);
+
+                // Total Matches
+                const { count: matchCount } = await supabaseClient
+                    .from('matches')
+                    .select('*', { count: 'exact', head: true });
+                document.getElementById('totalMatches').textContent = matchCount || 0;
+
+                // Pending Requests (deposits + withdrawals + tickets)
+                const { count: depositCount } = await supabaseClient
+                    .from('transactions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('type', 'credit')
+                    .eq('status', 'pending');
+
+                const { count: withdrawalCount } = await supabaseClient
+                    .from('withdrawals')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending');
+
+                const { count: ticketCount } = await supabaseClient
+                    .from('support_tickets')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'open');
+
+                const totalPending = (depositCount || 0) + (withdrawalCount || 0) + (ticketCount || 0);
+                document.getElementById('pendingRequests').textContent = totalPending;
+
+                // Update badges
+                document.getElementById('depositBadge').textContent = depositCount || 0;
+                document.getElementById('withdrawalBadge').textContent = withdrawalCount || 0;
+                document.getElementById('ticketBadge').textContent = ticketCount || 0;
+                
+                // Update mobile badges
+                document.getElementById('mobileDepositBadge').textContent = depositCount || 0;
+                document.getElementById('mobileWithdrawalBadge').textContent = withdrawalCount || 0;
+                document.getElementById('mobileTicketBadge').textContent = ticketCount || 0;
+                
+                // Hide badges if count is 0
+                document.getElementById('depositBadge').style.display = depositCount ? 'block' : 'none';
+                document.getElementById('withdrawalBadge').style.display = withdrawalCount ? 'block' : 'none';
+                document.getElementById('ticketBadge').style.display = ticketCount ? 'block' : 'none';
+                document.getElementById('mobileDepositBadge').style.display = depositCount ? 'block' : 'none';
+                document.getElementById('mobileWithdrawalBadge').style.display = withdrawalCount ? 'block' : 'none';
+                document.getElementById('mobileTicketBadge').style.display = ticketCount ? 'block' : 'none';
+
+                // Recent Users
+                await loadRecentUsers();
+
+                // Recent Transactions
+                await loadRecentTransactions();
+
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        async function loadRecentUsers() {
+            try {
+                const { data: users } = await supabaseClient
+                    .from('users')
+                    .select('full_name, email, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                const container = document.getElementById('recentUsers');
+
+                if (users && users.length > 0) {
+                    container.innerHTML = users.map(user => `
+                        <div style="padding: 12px 0; border-bottom: 1px solid var(--border);">
+                            <div style="font-weight: 600; margin-bottom: 4px;">${user.full_name}</div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">${user.email}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                                ${formatDate(new Date(user.created_at))}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-title">No users yet</div></div>';
+                }
+            } catch (error) {
+                console.error('Error loading recent users:', error);
+            }
+        }
+
+        async function loadRecentTransactions() {
+            try {
+                const { data: transactions } = await supabaseClient
+                    .from('transactions')
+                    .select(`
+                        *,
+                        users(full_name)
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                const container = document.getElementById('recentTransactions');
+
+                if (transactions && transactions.length > 0) {
+                    container.innerHTML = transactions.map(tx => `
+                        <div style="padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">${tx.users.full_name}</div>
+                                <div style="font-size: 13px; color: var(--text-secondary);">${tx.description}</div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                                    ${formatDate(new Date(tx.created_at))}
+                                </div>
+                            </div>
+                            <div style="font-size: 18px; font-weight: 700; color: ${tx.type === 'credit' ? 'var(--success)' : 'var(--error)'};">
+                                ${tx.type === 'credit' ? '+' : '-'}₹${tx.amount}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-title">No transactions yet</div></div>';
+                }
+            } catch (error) {
+                console.error('Error loading recent transactions:', error);
+            }
+        }
+
+        // ==========================================
+        // USERS MANAGEMENT
+        // ==========================================
+        async function loadUsers() {
+            try {
+                const { data: users, error } = await supabaseClient
+                    .from('users')
+                    .select(`
+                        *,
+                        wallets(balance)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allUsers = users || [];
+                renderUsers(allUsers);
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTable');
+
+            if (users && users.length > 0) {
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">${user.full_name}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">ID: ${user.id.substring(0, 8)}</div>
+                        </td>
+                        <td>${user.email}</td>
+                        <td>${user.phone}</td>
+                        <td style="font-weight: 700; color: var(--success);">₹${user.wallets?.balance || 0}</td>
+                        <td>${formatDate(new Date(user.created_at))}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.id}', '${user.full_name}')">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No users found</div></div></td></tr>';
+            }
+        }
+
+        function filterUsers() {
+            const search = document.getElementById('userSearch').value.toLowerCase();
+            const filtered = allUsers.filter(user => 
+                user.full_name.toLowerCase().includes(search) ||
+                user.email.toLowerCase().includes(search) ||
+                user.phone.includes(search)
+            );
+            renderUsers(filtered);
+        }
+
+        async function deleteUser(userId, userName) {
+            if (!confirm(`Are you sure you want to delete user "${userName}"?\n\nThis will delete all their data including wallet, transactions, and match history.`)) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .delete()
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                alert('User deleted successfully!');
+                await loadUsers();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Failed to delete user: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ========================================== 
+        // MATCHES MANAGEMENT
+        // ==========================================
+        async function loadMatches() {
+            try {
+                const { data: matches, error } = await supabaseClient
+                    .from('matches')
+                    .select('*')
+                    .order('match_date', { ascending: false });
+
+                if (error) throw error;
+
+                allMatches = matches || [];
+                renderMatches(allMatches);
+                renderResultsTable(allMatches);
+
+            } catch (error) {
+                console.error('Error loading matches:', error);
+            }
+        }
+
+        function renderMatches(matches) {
+            const tbody = document.getElementById('matchesTable');
+
+            if (matches && matches.length > 0) {
+                tbody.innerHTML = matches.map(match => {
+                    let statusBadge = '';
+                    if (match.status === 'open') statusBadge = '<span class="badge badge-success">Open</span>';
+                    else if (match.status === 'ongoing') statusBadge = '<span class="badge badge-info">Ongoing</span>';
+                    else if (match.status === 'completed') statusBadge = '<span class="badge badge-warning">Completed</span>';
+                    else statusBadge = '<span class="badge badge-danger">Cancelled</span>';
+
+                    return `
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">${match.title}</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">${match.match_type} • ${match.map}</div>
+                            </td>
+                            <td style="font-weight: 700; color: var(--secondary);">₹${match.prize_pool}</td>
+                            <td style="font-weight: 600;">₹${match.entry_fee}</td>
+                            <td>${match.current_players}/${match.max_players}</td>
+                            <td>${formatDate(new Date(match.match_date))}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-primary" onclick="changeMatchStatus('${match.id}', '${match.status}', '${match.title}')" title="Change Status">
+                                        🔄
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary" onclick="editMatch('${match.id}')">
+                                        ✏️
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteMatch('${match.id}', '${match.title}')">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="empty-state"><div class="empty-icon">🎮</div><div class="empty-title">No matches created yet</div></div></td></tr>';
+            }
+        }
+
+        function openCreateMatchModal() {
+            document.getElementById('createMatchForm').reset();
+            openModal('createMatchModal');
+        }
+
+        document.getElementById('createMatchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const matchData = {
+                title: document.getElementById('matchTitle').value.trim(),
+                match_type: document.getElementById('matchType').value,
+                prize_pool: parseFloat(document.getElementById('prizePool').value),
+                per_kill_prize: parseFloat(document.getElementById('perKillPrize').value) || 0,
+                entry_fee: parseFloat(document.getElementById('entryFee').value),
+                max_players: parseInt(document.getElementById('maxPlayers').value),
+                current_players: 0,
+                map: document.getElementById('matchMap').value,
+                match_date: document.getElementById('matchDate').value,
+                room_id: document.getElementById('roomId').value.trim() || null,
+                room_password: document.getElementById('roomPassword').value.trim() || null,
+                description: document.getElementById('matchDescription').value.trim() || null,
+                banner_url: document.getElementById('matchCardBanner').value.trim() || null,
+                status: 'open'
+            };
+
+            const sliderBannerUrl = document.getElementById('matchBannerUrl').value.trim();
+
+            showButtonLoading('createMatchBtnText', true, 'Creating...');
+
+            try {
+                // Create match
+                const { error } = await supabaseClient
+                    .from('matches')
+                    .insert([matchData]);
+
+                if (error) throw error;
+
+                // Auto-create homepage slider banner if URL provided
+                if (sliderBannerUrl) {
+                    try {
+                        // Get current max display order
+                        const { data: banners } = await supabaseClient
+                            .from('banners')
+                            .select('display_order')
+                            .order('display_order', { ascending: false })
+                            .limit(1);
+                        
+                        const nextOrder = banners && banners.length > 0 ? banners[0].display_order + 1 : 1;
+
+                        const bannerData = {
+                            title: matchData.title,
+                            description: `₹${matchData.prize_pool} Prize Pool • Entry: ₹${matchData.entry_fee}`,
+                            image_url: sliderBannerUrl,
+                            banner_type: 'promotion',
+                            display_order: nextOrder,
+                            active: true
+                        };
+
+                        const { error: bannerError } = await supabaseClient
+                            .from('banners')
+                            .insert([bannerData]);
+
+                        if (bannerError) {
+                            console.error('Slider banner creation failed:', bannerError);
+                            alert('⚠️ Match created but homepage banner creation failed.');
+                        } else {
+                            alert('✅ Match and homepage slider banner created successfully!');
+                        }
+                    } catch (bannerErr) {
+                        console.error('Slider banner creation error:', bannerErr);
+                        alert('✅ Match created! (Homepage banner skipped)');
+                    }
+                } else {
+                    alert('Match created successfully! ✓');
+                }
+
+                closeModal('createMatchModal');
+                document.getElementById('createMatchForm').reset();
+                await loadMatches();
+                await loadDashboardStats();
+                await loadBanners(); // Refresh banners
+
+            } catch (error) {
+                console.error('Error creating match:', error);
+                alert('Failed to create match: ' + error.message);
+            } finally {
+                showButtonLoading('createMatchBtnText', false, 'Create Match');
+            }
+        });
+
+        async function editMatch(matchId) {
+            // For simplicity, Room ID and Password can be edited directly in the table
+            const roomId = prompt('Enter Room ID:');
+            if (roomId === null) return;
+
+            const roomPassword = prompt('Enter Room Password:');
+            if (roomPassword === null) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('matches')
+                    .update({ 
+                        room_id: roomId,
+                        room_password: roomPassword
+                    })
+                    .eq('id', matchId);
+
+                if (error) throw error;
+
+                alert('Match updated successfully!');
+                await loadMatches();
+
+            } catch (error) {
+                console.error('Error updating match:', error);
+                alert('Failed to update match: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteMatch(matchId, matchTitle) {
+            if (!confirm(`Are you sure you want to delete "${matchTitle}"?`)) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('matches')
+                    .delete()
+                    .eq('id', matchId);
+
+                if (error) throw error;
+
+                alert('Match deleted successfully!');
+                await loadMatches();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error deleting match:', error);
+                alert('Failed to delete match: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function changeMatchStatus(matchId, currentStatus, matchTitle) {
+            // Status flow: open → ongoing → completed
+            const statusOptions = {
+                'open': { next: 'ongoing', label: 'Start Match (Open → Ongoing)', icon: '▶️' },
+                'ongoing': { next: 'completed', label: 'End Match (Ongoing → Completed)', icon: '🏁' },
+                'completed': { next: 'open', label: 'Reopen Match (Completed → Open)', icon: '🔄' }
+            };
+
+            const option = statusOptions[currentStatus];
+            if (!option) {
+                alert('Invalid status!');
+                return;
+            }
+
+            const message = `${option.icon} ${option.label}
+
+Match: ${matchTitle}
+
+Confirm status change?`;
+            if (!confirm(message)) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('matches')
+                    .update({ status: option.next })
+                    .eq('id', matchId);
+
+                if (error) throw error;
+
+                alert(`✅ Match status changed to "${option.next}"!`);
+                await loadMatches();
+
+            } catch (error) {
+                console.error('Error changing match status:', error);
+                alert('Failed to change status: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // RESULTS DECLARATION
+        // ==========================================
+        function renderResultsTable(matches) {
+            const tbody = document.getElementById('resultsTable');
+            const completedMatches = matches.filter(m => m.status === 'ongoing' || m.status === 'completed');
+
+            if (completedMatches && completedMatches.length > 0) {
+                tbody.innerHTML = completedMatches.map(match => {
+                    const statusBadge = match.status === 'completed' ? 
+                        '<span class="badge badge-success">Completed</span>' : 
+                        '<span class="badge badge-info">Ongoing</span>';
+
+                    return `
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">${match.title}</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">${match.match_type} • ${match.map}</div>
+                            </td>
+                            <td>${formatDate(new Date(match.match_date))}</td>
+                            <td>${match.current_players} players</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    ${match.status === 'completed' ? `
+                                        <button class="btn btn-sm btn-primary" onclick="viewLeaderboard('${match.id}', '${match.title}')">
+                                            📊 Leaderboard
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-success" onclick="openDeclareResultModal('${match.id}')">
+                                        ${match.status === 'completed' ? '✏️ Edit' : '🏆 Declare'}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-title">No matches to declare results</div></div></td></tr>';
+            }
+        }
+
+        async function openDeclareResultModal(matchId) {
+            currentMatchId = matchId;
+
+            showLoading(true);
+            try {
+                // Fetch match details for per_kill_prize and prize_pool
+                const { data: match, error: matchError } = await supabaseClient
+                    .from('matches')
+                    .select('per_kill_prize, prize_pool')
+                    .eq('id', matchId)
+                    .single();
+
+                if (matchError) throw matchError;
+
+                const perKillPrize = match.per_kill_prize || 0;
+                const prizePool = match.prize_pool || 0;
+
+                const { data: participants, error } = await supabaseClient
+                    .from('match_joins')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .eq('match_id', matchId)
+                    .order('joined_at', { ascending: true });
+
+                if (error) throw error;
+
+                const container = document.getElementById('resultParticipants');
+
+                if (participants && participants.length > 0) {
+                    container.innerHTML = `
+                        <div style="max-height: 60vh; overflow-y: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Screenshot</th>
+                                        <th>Position</th>
+                                        <th>Kills</th>
+                                        <th>Prize Won (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${participants.map(p => {
+                                        // Check if has position for styling
+                                        const hasPosition = p.position !== null;
+                                        const position = p.position || 0;
+                                        
+                                        // Medal and styling for top 3
+                                        let rowStyle = '';
+                                        let medalIcon = '';
+                                        if (position === 1) {
+                                            rowStyle = 'background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1)); border-left: 4px solid #FFD700;';
+                                            medalIcon = '🥇';
+                                        } else if (position === 2) {
+                                            rowStyle = 'background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1)); border-left: 4px solid #C0C0C0;';
+                                            medalIcon = '🥈';
+                                        } else if (position === 3) {
+                                            rowStyle = 'background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1)); border-left: 4px solid #CD7F32;';
+                                            medalIcon = '🥉';
+                                        }
+                                        
+                                        return `
+                                        <tr style="${rowStyle}">
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    ${medalIcon ? `<span style="font-size: 24px;">${medalIcon}</span>` : ''}
+                                                    <div>
+                                                        <div style="font-weight: 600;">${p.users.full_name}</div>
+                                                        <div style="font-size: 11px; color: var(--text-secondary);">${p.users.email}</div>
+                                                        ${p.submitted_at ? `<div style="font-size: 10px; color: var(--success); margin-top: 4px;">✓ Submitted ${formatDateTime(new Date(p.submitted_at))}</div>` : ''}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                ${p.screenshot_url ? `
+                                                    <img src="${p.screenshot_url}" 
+                                                         onclick="window.open('${p.screenshot_url}', '_blank')" 
+                                                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--border);" 
+                                                         title="Click to view full size">
+                                                ` : '<span style="color: var(--text-secondary); font-size: 12px;">No screenshot</span>'}
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-input" 
+                                                       id="position_${p.id}" 
+                                                       placeholder="#" 
+                                                       min="1" 
+                                                       value="${p.position || ''}" 
+                                                       onchange="calculateTotalPrize('${p.id}', ${perKillPrize}, ${prizePool})"
+                                                       style="width: 70px;">
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-input" 
+                                                       id="kills_${p.id}" 
+                                                       placeholder="0" 
+                                                       min="0" 
+                                                       value="${p.kills || 0}" 
+                                                       onchange="calculateTotalPrize('${p.id}', ${perKillPrize}, ${prizePool})"
+                                                       style="width: 70px;">
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-input" 
+                                                       id="prize_${p.id}" 
+                                                       placeholder="0" 
+                                                       min="0" 
+                                                       step="0.01"
+                                                       value="${p.prize_won || 0}" 
+                                                       style="width: 100px; ${position <= 3 && position > 0 ? 'font-weight: 700; color: var(--success);' : ''}">
+                                            </td>
+                                        </tr>
+                                    `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 165, 0, 0.1); border-radius: 8px; border-left: 4px solid var(--warning);">
+                            <div style="font-weight: 600; margin-bottom: 8px;">📊 Prize Distribution Tips:</div>
+                            ${perKillPrize > 0 ? `
+                                <div style="padding: 10px; background: rgba(0, 210, 255, 0.15); border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(0, 210, 255, 0.3);">
+                                    <strong style="color: var(--primary);">🎯 Per Kill Prize: ₹${perKillPrize}</strong>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Kills will auto-calculate bonus prize</div>
+                                </div>
+                            ` : ''}
+                            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: var(--text-secondary);">
+                                <li>Verify screenshots before entering kills/position</li>
+                                <li>${perKillPrize > 0 ? 'Enter kills count - bonus will auto-add to prize' : 'Manually enter prize amounts'}</li>
+                                <li>Prize amounts will be automatically credited to wallets</li>
+                                <li>Match status will change to "Completed" after saving</li>
+                            </ul>
+                        </div>
+                    `;
+
+                    openModal('declareResultModal');
+                    
+                    // Auto-calculate prizes for existing positions/kills after modal opens
+                    setTimeout(() => {
+                        participants.forEach(p => {
+                            if (p.position || p.kills) {
+                                calculateTotalPrize(p.id, perKillPrize, prizePool);
+                            }
+                        });
+                    }, 100);
+                } else {
+                    alert('No participants in this match!');
+                }
+
+            } catch (error) {
+                console.error('Error loading participants:', error);
+                alert('Failed to load participants');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function saveMatchResults() {
+            if (!confirm('Save match results and distribute prizes?')) return;
+
+            showButtonLoading('saveResultsBtnText', true, 'Saving...');
+
+            try {
+                const { data: participants } = await supabaseClient
+                    .from('match_joins')
+                    .select('*')
+                    .eq('match_id', currentMatchId);
+
+                // Update each participant
+                const winners = [];
+                for (const participant of participants) {
+                    const position = parseInt(document.getElementById(`position_${participant.id}`)?.value) || null;
+                    const kills = parseInt(document.getElementById(`kills_${participant.id}`)?.value) || 0;
+                    const prizeWon = parseFloat(document.getElementById(`prize_${participant.id}`)?.value) || 0;
+
+                    // Update match join
+                    await supabaseClient
+                        .from('match_joins')
+                        .update({ position, kills, prize_won: prizeWon })
+                        .eq('id', participant.id);
+
+                    // Track winners for notifications
+                    if (position || prizeWon > 0) {
+                        winners.push({
+                            user_id: participant.user_id,
+                            position,
+                            kills,
+                            prizeWon
+                        });
+                    }
+
+                    // If prize won, credit to wallet
+                    if (prizeWon > 0) {
+                        const { data: wallet } = await supabaseClient
+                            .from('wallets')
+                            .select('balance')
+                            .eq('user_id', participant.user_id)
+                            .single();
+
+                        if (wallet) {
+                            await supabaseClient
+                                .from('wallets')
+                                .update({ balance: wallet.balance + prizeWon })
+                                .eq('user_id', participant.user_id);
+
+                            // Create transaction with detailed description
+                            const positionText = position === 1 ? '1st Place' : position === 2 ? '2nd Place' : position === 3 ? '3rd Place' : position ? `Rank #${position}` : '';
+                            const description = `🏆 Match prize${positionText ? ` - ${positionText}` : ''}${kills > 0 ? ` (${kills} kills)` : ''}`;
+                            
+                            await supabaseClient.from('transactions').insert([{
+                                user_id: participant.user_id,
+                                type: 'credit',
+                                amount: prizeWon,
+                                description: description,
+                                reference_id: currentMatchId,
+                                status: 'completed'
+                            }]);
+                        }
+                    }
+                }
+
+                // Update match status
+                await supabaseClient
+                    .from('matches')
+                    .update({ status: 'completed' })
+                    .eq('id', currentMatchId);
+
+                // Success message with winner summary
+                const winnerSummary = winners.length > 0 ? `\n\n🏆 Winners:\n${winners.map(w => {
+                    const medal = w.position === 1 ? '🥇' : w.position === 2 ? '🥈' : w.position === 3 ? '🥉' : '🏅';
+                    return `${medal} Rank #${w.position || 'N/A'} - ₹${w.prizeWon}${w.kills > 0 ? ` (${w.kills} kills)` : ''}`;
+                }).join('\n')}\n\nAll winners have been notified!` : '';
+                
+                alert(`Results saved and prizes distributed successfully! ✓${winnerSummary}`);
+                closeModal('declareResultModal');
+                await loadMatches();
+
+            } catch (error) {
+                console.error('Error saving results:', error);
+                alert('Failed to save results: ' + error.message);
+            } finally {
+                showButtonLoading('saveResultsBtnText', false, '💾 Save Results');
+            }
+        }
+
+        // Calculate total prize: position prize + kill bonus
+        function calculateTotalPrize(participantId, perKillPrize, prizePool) {
+            const positionInput = document.getElementById(`position_${participantId}`);
+            const killsInput = document.getElementById(`kills_${participantId}`);
+            const prizeInput = document.getElementById(`prize_${participantId}`);
+
+            if (!positionInput || !killsInput || !prizeInput) return;
+
+            const position = parseInt(positionInput.value) || null;
+            const kills = parseInt(killsInput.value) || 0;
+
+            let totalPrize = 0;
+            let breakdown = [];
+
+            // Position-based prize (standard distribution)
+            if (position) {
+                let positionPrize = 0;
+                if (position === 1) {
+                    positionPrize = prizePool * 0.50; // 50% for 1st
+                    breakdown.push(`🥇 1st: ₹${positionPrize.toFixed(2)}`);
+                } else if (position === 2) {
+                    positionPrize = prizePool * 0.30; // 30% for 2nd
+                    breakdown.push(`🥈 2nd: ₹${positionPrize.toFixed(2)}`);
+                } else if (position === 3) {
+                    positionPrize = prizePool * 0.20; // 20% for 3rd
+                    breakdown.push(`🥉 3rd: ₹${positionPrize.toFixed(2)}`);
+                }
+                totalPrize += positionPrize;
+            }
+
+            // Kill-based bonus (for ALL players with kills)
+            if (kills > 0 && perKillPrize > 0) {
+                const killBonus = kills * perKillPrize;
+                totalPrize += killBonus;
+                breakdown.push(`🎯 ${kills} kills: ₹${killBonus.toFixed(2)}`);
+            }
+
+            // Set total prize
+            prizeInput.value = totalPrize.toFixed(2);
+
+            // Visual feedback
+            if (totalPrize > 0) {
+                prizeInput.style.background = 'rgba(0, 255, 136, 0.2)';
+                prizeInput.style.border = '2px solid var(--success)';
+                
+                // Show tooltip with breakdown
+                const tooltip = document.createElement('div');
+                tooltip.style.cssText = 'position: absolute; background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: white; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-top: -60px; white-space: nowrap; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+                tooltip.innerHTML = `
+                    <div style="font-weight: 700; margin-bottom: 4px;">💰 Total Prize: ₹${totalPrize.toFixed(2)}</div>
+                    ${breakdown.map(b => `<div style="font-size: 11px; opacity: 0.9;">${b}</div>`).join('')}
+                `;
+                prizeInput.parentElement.style.position = 'relative';
+                prizeInput.parentElement.appendChild(tooltip);
+                
+                setTimeout(() => {
+                    prizeInput.style.background = '';
+                    prizeInput.style.border = '';
+                    if (tooltip && tooltip.parentElement) {
+                        tooltip.remove();
+                    }
+                }, 3000);
+            }
+        }
+
+        // ==========================================
+        // LEADERBOARD VIEW
+        // ==========================================
+        async function viewLeaderboard(matchId, matchTitle) {
+            showLoading(true);
+            
+            try {
+                // Fetch match participants with results
+                const { data: participants, error } = await supabaseClient
+                    .from('match_joins')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .eq('match_id', matchId)
+                    .order('position', { ascending: true, nullsLast: true });
+
+                if (error) throw error;
+
+                // Separate winners and participants
+                const winners = participants.filter(p => p.position !== null);
+                const others = participants.filter(p => p.position === null);
+
+                document.getElementById('leaderboardTitle').textContent = `🏆 ${matchTitle} - Leaderboard`;
+
+                const content = document.getElementById('leaderboardContent');
+                content.innerHTML = `
+                    ${winners.length > 0 ? `
+                        <div style="margin-bottom: 30px;">
+                            <h4 style="color: var(--primary); margin-bottom: 20px; font-size: 18px;">🏆 Winners</h4>
+                            <div style="display: grid; gap: 15px;">
+                                ${winners.map((p, index) => {
+                                    const medal = p.position === 1 ? '🥇' : p.position === 2 ? '🥈' : p.position === 3 ? '🥉' : '🏅';
+                                    const bgColor = p.position === 1 ? 'rgba(255, 215, 0, 0.15)' : 
+                                                   p.position === 2 ? 'rgba(192, 192, 192, 0.15)' : 
+                                                   p.position === 3 ? 'rgba(205, 127, 50, 0.15)' : 'rgba(0, 210, 255, 0.1)';
+                                    return `
+                                        <div style="padding: 20px; background: ${bgColor}; border-radius: 12px; border: 2px solid var(--border);">
+                                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                                <div style="flex: 1;">
+                                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                                        <span style="font-size: 32px;">${medal}</span>
+                                                        <div>
+                                                            <div style="font-size: 18px; font-weight: 700; color: var(--primary);">Rank #${p.position}</div>
+                                                            <div style="font-weight: 600; font-size: 16px;">${p.users.full_name}</div>
+                                                            <div style="font-size: 12px; color: var(--text-secondary);">${p.users.email}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div style="display: flex; gap: 20px; margin-top: 12px;">
+                                                        <div style="padding: 8px 12px; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                                                            <div style="font-size: 11px; color: var(--text-secondary);">Kills</div>
+                                                            <div style="font-size: 18px; font-weight: 700; color: var(--success);">${p.kills || 0}</div>
+                                                        </div>
+                                                        ${p.prize_won > 0 ? `
+                                                            <div style="padding: 8px 12px; background: rgba(0, 255, 136, 0.15); border-radius: 6px;">
+                                                                <div style="font-size: 11px; color: var(--text-secondary);">Prize Won</div>
+                                                                <div style="font-size: 18px; font-weight: 700; color: var(--success);">₹${p.prize_won}</div>
+                                                            </div>
+                                                        ` : ''}
+                                                    </div>
+                                                </div>
+                                                ${p.screenshot_url ? `
+                                                    <div>
+                                                        <img src="${p.screenshot_url}" 
+                                                             onclick="window.open('${p.screenshot_url}', '_blank')" 
+                                                             style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--border);" 
+                                                             title="Click to view full size">
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${others.length > 0 ? `
+                        <div>
+                            <h4 style="color: var(--text-secondary); margin-bottom: 15px; font-size: 16px;">👥 Other Participants</h4>
+                            <div style="display: grid; gap: 10px;">
+                                ${others.map(p => `
+                                    <div style="padding: 15px; background: var(--bg-lighter); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="font-weight: 600;">${p.users.full_name}</div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);">${p.users.email}</div>
+                                        </div>
+                                        ${p.screenshot_url ? `
+                                            <div>
+                                                <img src="${p.screenshot_url}" 
+                                                     onclick="window.open('${p.screenshot_url}', '_blank')" 
+                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid var(--border);" 
+                                                     title="Click to view screenshot">
+                                            </div>
+                                        ` : '<span style="font-size: 12px; color: var(--text-secondary);">No result</span>'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${winners.length === 0 && others.length === 0 ? `
+                        <div class="empty-state">
+                            <div class="empty-icon">🏆</div>
+                            <div class="empty-title">No participants found</div>
+                        </div>
+                    ` : ''}
+                `;
+
+                openModal('leaderboardModal');
+
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                alert('Failed to load leaderboard');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // DEPOSITS MANAGEMENT
+        // ==========================================
+        async function loadDeposits() {
+            try {
+                const { data: deposits, error } = await supabaseClient
+                    .from('transactions')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .eq('type', 'credit')
+                    .in('status', ['pending', 'approved', 'rejected'])
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('depositsTable');
+
+                if (deposits && deposits.length > 0) {
+                    tbody.innerHTML = deposits.map(deposit => {
+                        let statusBadge = '';
+                        if (deposit.status === 'pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
+                        else if (deposit.status === 'approved') statusBadge = '<span class="badge badge-success">Approved</span>';
+                        else statusBadge = '<span class="badge badge-danger">Rejected</span>';
+
+                        return `
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600;">${deposit.users.full_name}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">${deposit.users.email}</div>
+                                </td>
+                                <td style="font-weight: 700; color: var(--success);">₹${deposit.amount}</td>
+                                <td style="font-family: monospace; font-size: 13px;">${deposit.reference_id || 'N/A'}</td>
+                                <td>
+                                    ${deposit.screenshot_url ? `
+                                        <button class="btn btn-sm btn-secondary" onclick="viewScreenshot('${deposit.screenshot_url}', '${deposit.users.full_name}')" style="font-size: 12px; padding: 6px 10px;">
+                                            🖼️ View
+                                        </button>
+                                    ` : '<span style="color: var(--text-secondary); font-size: 13px;">No screenshot</span>'}
+                                </td>
+                                <td>${formatDateTime(new Date(deposit.created_at))}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    ${deposit.status === 'pending' ? `
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-success" onclick="approveDeposit('${deposit.id}', '${deposit.user_id}', ${deposit.amount})">
+                                                ✓ Approve
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="rejectDeposit('${deposit.id}')">
+                                                ✕ Reject
+                                            </button>
+                                        </div>
+                                    ` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="empty-state"><div class="empty-icon">💰</div><div class="empty-title">No deposit requests</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading deposits:', error);
+            }
+        }
+
+        async function approveDeposit(transactionId, userId, amount) {
+            if (!confirm(`Approve deposit of ₹${amount}?`)) return;
+
+            showLoading(true);
+            try {
+                // Update transaction status
+                await supabaseClient
+                    .from('transactions')
+                    .update({ status: 'approved' })
+                    .eq('id', transactionId);
+
+                // Add money to wallet
+                const { data: wallet } = await supabaseClient
+                    .from('wallets')
+                    .select('balance, total_deposited')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (wallet) {
+                    await supabaseClient
+                        .from('wallets')
+                        .update({ 
+                            balance: wallet.balance + amount,
+                            total_deposited: wallet.total_deposited + amount
+                        })
+                        .eq('user_id', userId);
+                }
+
+                alert('Deposit approved and credited! ✓');
+                await loadDeposits();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error approving deposit:', error);
+                alert('Failed to approve deposit: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function rejectDeposit(transactionId) {
+            if (!confirm('Reject this deposit request?')) return;
+
+            showLoading(true);
+            try {
+                await supabaseClient
+                    .from('transactions')
+                    .update({ status: 'rejected' })
+                    .eq('id', transactionId);
+
+                alert('Deposit rejected!');
+                await loadDeposits();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error rejecting deposit:', error);
+                alert('Failed to reject deposit: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // View payment screenshot
+        function viewScreenshot(screenshotUrl, userName) {
+            if (screenshotUrl) {
+                document.getElementById('screenshotModalTitle').textContent = `Payment Screenshot - ${userName}`;
+                document.getElementById('screenshotModalImage').src = screenshotUrl;
+                openModal('screenshotModal');
+            }
+        }
+
+        // ==========================================
+        // WITHDRAWALS MANAGEMENT
+        // ==========================================
+        async function loadWithdrawals() {
+            try {
+                const { data: withdrawals, error } = await supabaseClient
+                    .from('withdrawals')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('withdrawalsTable');
+
+                if (withdrawals && withdrawals.length > 0) {
+                    tbody.innerHTML = withdrawals.map(withdrawal => {
+                        let statusBadge = '';
+                        if (withdrawal.status === 'pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
+                        else if (withdrawal.status === 'approved') statusBadge = '<span class="badge badge-success">Approved</span>';
+                        else statusBadge = '<span class="badge badge-danger">Rejected</span>';
+
+                        let details = '';
+                        if (withdrawal.method === 'bank') {
+                            details = `
+                                <strong>${withdrawal.account_holder_name}</strong><br>
+                                A/C: ${withdrawal.account_number}<br>
+                                IFSC: ${withdrawal.ifsc_code}<br>
+                                ${withdrawal.bank_name}
+                            `;
+                        } else {
+                            details = `UPI: <strong>${withdrawal.upi_id}</strong>`;
+                        }
+
+                        return `
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600;">${withdrawal.users.full_name}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">${withdrawal.users.email}</div>
+                                </td>
+                                <td style="font-weight: 700; color: var(--error);">₹${withdrawal.amount}</td>
+                                <td style="text-transform: uppercase;">${withdrawal.method}</td>
+                                <td style="font-size: 13px;">${details}</td>
+                                <td>${formatDateTime(new Date(withdrawal.created_at))}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    ${withdrawal.status === 'pending' ? `
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-success" onclick="approveWithdrawal('${withdrawal.id}', '${withdrawal.user_id}', ${withdrawal.amount})">
+                                                ✓ Approve
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="rejectWithdrawal('${withdrawal.id}')">
+                                                ✕ Reject
+                                            </button>
+                                        </div>
+                                    ` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="empty-state"><div class="empty-icon">💸</div><div class="empty-title">No withdrawal requests</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading withdrawals:', error);
+            }
+        }
+
+        async function approveWithdrawal(withdrawalId, userId, netAmount) {
+            // Note: netAmount is what user receives (after 2% deduction)
+            // We need to find the original requested amount from transaction
+            
+            showLoading(true);
+            try {
+                // Get the transaction to find requested amount
+                const { data: transaction } = await supabaseClient
+                    .from('transactions')
+                    .select('amount, description')
+                    .eq('user_id', userId)
+                    .eq('type', 'debit')
+                    .eq('status', 'pending')
+                    .like('description', 'Withdrawal request%')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                const requestedAmount = transaction ? transaction.amount : netAmount;
+                
+                if (!confirm(`Approve withdrawal?
+
+Net Amount to User: ₹${netAmount.toFixed(2)}
+Wallet Deduction: ₹${requestedAmount.toFixed(2)}
+
+Make sure you have transferred ₹${netAmount.toFixed(2)} to user's account!`)) return;
+
+                // Update withdrawal status
+                await supabaseClient
+                    .from('withdrawals')
+                    .update({ status: 'approved' })
+                    .eq('id', withdrawalId);
+
+                // Get current wallet balance
+                const { data: wallet } = await supabaseClient
+                    .from('wallets')
+                    .select('balance, total_withdrawn')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (wallet) {
+                    // Deduct REQUESTED amount from wallet (includes charges)
+                    await supabaseClient
+                        .from('wallets')
+                        .update({ 
+                            balance: wallet.balance - requestedAmount,
+                            total_withdrawn: wallet.total_withdrawn + netAmount
+                        })
+                        .eq('user_id', userId);
+
+                    // Update existing pending transaction to approved
+                    await supabaseClient
+                        .from('transactions')
+                        .update({ 
+                            status: 'approved',
+                            reference_id: withdrawalId
+                        })
+                        .eq('user_id', userId)
+                        .eq('type', 'debit')
+                        .eq('amount', requestedAmount)
+                        .eq('status', 'pending')
+                        .like('description', 'Withdrawal request%');
+                }
+
+                alert('Withdrawal approved! ✓');
+                await loadWithdrawals();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error approving withdrawal:', error);
+                alert('Failed to approve withdrawal: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function rejectWithdrawal(withdrawalId) {
+            const note = prompt('Reason for rejection (optional):');
+            if (note === null) return; // User cancelled
+
+            showLoading(true);
+            try {
+                // Get withdrawal details
+                const { data: withdrawal } = await supabaseClient
+                    .from('withdrawals')
+                    .select('user_id, amount')
+                    .eq('id', withdrawalId)
+                    .single();
+
+                if (!withdrawal) throw new Error('Withdrawal not found');
+
+                // Get transaction to find requested amount
+                const { data: transaction } = await supabaseClient
+                    .from('transactions')
+                    .select('amount')
+                    .eq('user_id', withdrawal.user_id)
+                    .eq('type', 'debit')
+                    .eq('status', 'pending')
+                    .like('description', 'Withdrawal request%')
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                const requestedAmount = transaction ? transaction.amount : withdrawal.amount;
+
+                // Update withdrawal status
+                await supabaseClient
+                    .from('withdrawals')
+                    .update({ 
+                        status: 'rejected',
+                        admin_note: note || 'Rejected by admin'
+                    })
+                    .eq('id', withdrawalId);
+
+                // Update pending transaction to rejected
+                await supabaseClient
+                    .from('transactions')
+                    .update({ 
+                        status: 'rejected',
+                        description: note ? `Withdrawal rejected: ${note}` : 'Withdrawal rejected'
+                    })
+                    .eq('user_id', withdrawal.user_id)
+                    .eq('type', 'debit')
+                    .eq('amount', requestedAmount)
+                    .eq('status', 'pending')
+                    .like('description', 'Withdrawal request%');
+
+                alert('Withdrawal rejected!');
+                await loadWithdrawals();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error rejecting withdrawal:', error);
+                alert('Failed to reject withdrawal: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // TRANSACTIONS
+        // ==========================================
+        async function loadTransactions() {
+            try {
+                const { data: transactions, error } = await supabaseClient
+                    .from('transactions')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('transactionsTable');
+
+                if (transactions && transactions.length > 0) {
+                    tbody.innerHTML = transactions.map(tx => {
+                        let statusBadge = '';
+                        if (tx.status === 'pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
+                        else if (tx.status === 'approved') statusBadge = '<span class="badge badge-success">Approved</span>';
+                        else if (tx.status === 'completed') statusBadge = '<span class="badge badge-success">Completed</span>';
+                        else statusBadge = '<span class="badge badge-danger">Rejected</span>';
+
+                        const typeBadge = tx.type === 'credit' ? 
+                            '<span class="badge badge-success">Credit</span>' : 
+                            '<span class="badge badge-danger">Debit</span>';
+
+                        return `
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600;">${tx.users.full_name}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">${tx.users.email}</div>
+                                </td>
+                                <td>${typeBadge}</td>
+                                <td style="font-weight: 700; color: ${tx.type === 'credit' ? 'var(--success)' : 'var(--error)'};">  ₹${tx.amount}</td>
+                                <td>${tx.description}</td>
+                                <td style="font-family: monospace; font-size: 12px;">${tx.reference_id ? tx.reference_id.substring(0, 12) : '-'}</td>
+                                <td>${formatDateTime(new Date(tx.created_at))}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No transactions</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+            }
+        }
+
+        // ==========================================
+        // BANNERS MANAGEMENT
+        // ==========================================
+        async function loadBanners() {
+            try {
+                const { data: banners, error } = await supabaseClient
+                    .from('banners')
+                    .select('*')
+                    .order('display_order', { ascending: true });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('bannersTable');
+
+                if (banners && banners.length > 0) {
+                    tbody.innerHTML = banners.map(banner => {
+                        const statusBadge = banner.active ? 
+                            '<span class="badge badge-success">Active</span>' : 
+                            '<span class="badge badge-danger">Inactive</span>';
+
+                        return `
+                            <tr>
+                                <td>
+                                    <img src="${banner.image_url}" alt="Banner" 
+                                         style="width: 120px; height: 50px; object-fit: cover; border-radius: 8px;"
+                                         onerror="this.src='https://via.placeholder.com/120x50/1a1a2e/ff4655?text=Error'">
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600;">${banner.title || 'No title'}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">${banner.description || ''}</div>
+                                </td>
+                                <td><span class="badge badge-info">${banner.banner_type}</span></td>
+                                <td>${banner.display_order}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-${banner.active ? 'warning' : 'success'}" 
+                                                onclick="toggleBannerStatus('${banner.id}', ${!banner.active})">
+                                            ${banner.active ? '⏸️ Deactivate' : '▶️ Activate'}
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteBanner('${banner.id}')">
+                                            🗑️ Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="empty-state"><div class="empty-icon">🖼️</div><div class="empty-title">No banners</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading banners:', error);
+            }
+        }
+
+        function openCreateBannerModal() {
+            document.getElementById('createBannerForm').reset();
+            openModal('createBannerModal');
+        }
+
+        document.getElementById('createBannerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const bannerData = {
+                title: document.getElementById('bannerTitle').value.trim() || null,
+                image_url: document.getElementById('bannerImageUrl').value.trim(),
+                banner_type: document.getElementById('bannerType').value,
+                display_order: parseInt(document.getElementById('bannerOrder').value),
+                description: document.getElementById('bannerDescription').value.trim() || null,
+                active: true
+            };
+
+            showButtonLoading('createBannerBtnText', true, 'Creating...');
+
+            try {
+                const { error } = await supabaseClient
+                    .from('banners')
+                    .insert([bannerData]);
+
+                if (error) throw error;
+
+                alert('Banner created successfully! ✓');
+                closeModal('createBannerModal');
+                await loadBanners();
+
+            } catch (error) {
+                console.error('Error creating banner:', error);
+                alert('Failed to create banner: ' + error.message);
+            } finally {
+                showButtonLoading('createBannerBtnText', false, 'Create Banner');
+            }
+        });
+
+        async function toggleBannerStatus(bannerId, newStatus) {
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('banners')
+                    .update({ active: newStatus })
+                    .eq('id', bannerId);
+
+                if (error) throw error;
+
+                await loadBanners();
+
+            } catch (error) {
+                console.error('Error toggling banner:', error);
+                alert('Failed to update banner: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteBanner(bannerId) {
+            if (!confirm('Delete this banner?')) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('banners')
+                    .delete()
+                    .eq('id', bannerId);
+
+                if (error) throw error;
+
+                alert('Banner deleted!');
+                await loadBanners();
+
+            } catch (error) {
+                console.error('Error deleting banner:', error);
+                alert('Failed to delete banner: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // ANNOUNCEMENTS
+        // ==========================================
+        async function loadAnnouncements() {
+            try {
+                const { data: announcements, error } = await supabaseClient
+                    .from('announcements')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('announcementsTable');
+
+                if (announcements && announcements.length > 0) {
+                    tbody.innerHTML = announcements.map(announcement => {
+                        const statusBadge = announcement.active ? 
+                            '<span class="badge badge-success">Active</span>' : 
+                            '<span class="badge badge-danger">Inactive</span>';
+
+                        return `
+                            <tr>
+                                <td style="font-weight: 600;">${announcement.title}</td>
+                                <td style="max-width: 300px;">${announcement.message.substring(0, 100)}${announcement.message.length > 100 ? '...' : ''}</td>
+                                <td>${formatDate(new Date(announcement.created_at))}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-${announcement.active ? 'warning' : 'success'}" 
+                                                onclick="toggleAnnouncementStatus('${announcement.id}', ${!announcement.active})">
+                                            ${announcement.active ? 'Deactivate' : 'Activate'}
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${announcement.id}')">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="empty-state"><div class="empty-icon">📢</div><div class="empty-title">No announcements</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+            }
+        }
+
+        function openCreateAnnouncementModal() {
+            document.getElementById('createAnnouncementForm').reset();
+            openModal('createAnnouncementModal');
+        }
+
+        document.getElementById('createAnnouncementForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const announcementData = {
+                title: document.getElementById('announcementTitle').value.trim(),
+                message: document.getElementById('announcementMessage').value.trim(),
+                active: true
+            };
+
+            showButtonLoading('createAnnouncementBtnText', true, 'Creating...');
+
+            try {
+                const { error } = await supabaseClient
+                    .from('announcements')
+                    .insert([announcementData]);
+
+                if (error) throw error;
+
+                alert('Announcement created! ✓');
+                closeModal('createAnnouncementModal');
+                await loadAnnouncements();
+
+            } catch (error) {
+                console.error('Error creating announcement:', error);
+                alert('Failed to create announcement: ' + error.message);
+            } finally {
+                showButtonLoading('createAnnouncementBtnText', false, 'Create Announcement');
+            }
+        });
+
+        async function toggleAnnouncementStatus(announcementId, newStatus) {
+            showLoading(true);
+            try {
+                await supabaseClient
+                    .from('announcements')
+                    .update({ active: newStatus })
+                    .eq('id', announcementId);
+
+                await loadAnnouncements();
+
+            } catch (error) {
+                console.error('Error toggling announcement:', error);
+                alert('Failed to update announcement');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteAnnouncement(announcementId) {
+            if (!confirm('Delete this announcement?')) return;
+
+            showLoading(true);
+            try {
+                await supabaseClient
+                    .from('announcements')
+                    .delete()
+                    .eq('id', announcementId);
+
+                alert('Announcement deleted!');
+                await loadAnnouncements();
+
+            } catch (error) {
+                console.error('Error deleting announcement:', error);
+                alert('Failed to delete announcement');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==========================================
+        // SUPPORT TICKETS
+        // ==========================================
+        async function loadSupportTickets() {
+            try {
+                const { data: tickets, error } = await supabaseClient
+                    .from('support_tickets')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('ticketsTable');
+
+                if (tickets && tickets.length > 0) {
+                    tbody.innerHTML = tickets.map(ticket => {
+                        const statusBadge = ticket.status === 'open' ? 
+                            '<span class="badge badge-warning">Open</span>' : 
+                            '<span class="badge badge-success">Closed</span>';
+
+                        return `
+                            <tr>
+                                <td style="font-family: monospace;">#${ticket.id.substring(0, 8)}</td>
+                                <td>
+                                    <div style="font-weight: 600;">${ticket.users.full_name}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">${ticket.users.email}</div>
+                                </td>
+                                <td>${ticket.subject}</td>
+                                <td>${formatDate(new Date(ticket.created_at))}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    ${ticket.status === 'open' ? `
+                                        <button class="btn btn-sm btn-success" onclick="openReplyTicketModal('${ticket.id}')">
+                                            💬 Reply
+                                        </button>
+                                    ` : '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">No support tickets</div></div></td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+            }
+        }
+
+        async function openReplyTicketModal(ticketId) {
+            currentTicketId = ticketId;
+
+            showLoading(true);
+            try {
+                const { data: ticket, error } = await supabaseClient
+                    .from('support_tickets')
+                    .select(`
+                        *,
+                        users(full_name, email)
+                    `)
+                    .eq('id', ticketId)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('ticketDetails').innerHTML = `
+                    <div style="background: var(--bg-lighter); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                            From: <strong style="color: var(--text-primary);">${ticket.users.full_name}</strong> (${ticket.users.email})
+                        </div>
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
+                            Date: ${formatDateTime(new Date(ticket.created_at))}
+                        </div>
+                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px;">${ticket.subject}</div>
+                        <div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 15px;">${ticket.message}</div>
+                        
+                        ${ticket.screenshot_url ? `
+                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                <div style="font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">📷 Screenshot Attached:</div>
+                                <img src="${ticket.screenshot_url}" 
+                                     style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; cursor: pointer; border: 2px solid var(--border); background: #000;" 
+                                     onclick="viewFullScreenshot('${ticket.screenshot_url}')" 
+                                     alt="Ticket Screenshot" />
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <button class="btn btn-sm btn-outline" onclick="viewFullScreenshot('${ticket.screenshot_url}')" style="font-size: 13px;">
+                                        🔍 View Full Size
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                openModal('replyTicketModal');
+
+            } catch (error) {
+                console.error('Error loading ticket:', error);
+                alert('Failed to load ticket');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        document.getElementById('replyTicketForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const reply = document.getElementById('ticketReply').value.trim();
+
+            showButtonLoading('replyTicketBtnText', true, 'Sending...');
+
+            try {
+                const { error } = await supabaseClient
+                    .from('support_tickets')
+                    .update({ 
+                        admin_reply: reply,
+                        status: 'closed'
+                    })
+                    .eq('id', currentTicketId);
+
+                if (error) throw error;
+
+                alert('Reply sent and ticket closed! ✓');
+                closeModal('replyTicketModal');
+                document.getElementById('replyTicketForm').reset();
+                await loadSupportTickets();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Error replying to ticket:', error);
+                alert('Failed to send reply: ' + error.message);
+            } finally {
+                showButtonLoading('replyTicketBtnText', false, 'Send Reply & Close');
+            }
+        });
+
+        // View screenshot in full size
+        function viewFullScreenshot(imageUrl) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                cursor: zoom-out;
+            `;
+
+            overlay.onclick = () => overlay.remove();
+
+            // Create image
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = `
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                border-radius: 8px;
+                box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            `;
+
+            // Create close button
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                font-size: 24px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                overlay.remove();
+            };
+
+            overlay.appendChild(img);
+            overlay.appendChild(closeBtn);
+            document.body.appendChild(overlay);
+        }
+
+        // ==========================================
+        // PAYMENT METHODS CONFIGURATION
+        // ==========================================
+        document.getElementById('paymentMethodsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const upiId = document.getElementById('upiId').value.trim();
+            const qrCodeUrl = document.getElementById('qrCodeUrl').value.trim() || null;
+
+            showButtonLoading('paymentBtnText', true, 'Saving...');
+
+            try {
+                // Check if payment method exists
+                const { data: existing } = await supabaseClient
+                    .from('payment_methods')
+                    .select('id')
+                    .eq('active', true)
+                    .single();
+
+                if (existing) {
+                    // Update
+                    await supabaseClient
+                        .from('payment_methods')
+                        .update({ upi_id: upiId, qr_code_url: qrCodeUrl })
+                        .eq('id', existing.id);
+                } else {
+                    // Insert
+                    await supabaseClient
+                        .from('payment_methods')
+                        .insert([{ upi_id: upiId, qr_code_url: qrCodeUrl, active: true }]);
+                }
+
+                alert('Payment methods updated successfully! ✓');
+
+            } catch (error) {
+                console.error('Error saving payment methods:', error);
+                alert('Failed to save: ' + error.message);
+            } finally {
+                showButtonLoading('paymentBtnText', false, '💾 Save Payment Methods');
+            }
+        });
+
+        // Load existing payment methods
+        async function loadPaymentMethods() {
+            try {
+                const { data: methods } = await supabaseClient
+                    .from('payment_methods')
+                    .select('*')
+                    .eq('active', true)
+                    .single();
+
+                if (methods) {
+                    document.getElementById('upiId').value = methods.upi_id || '';
+                    document.getElementById('qrCodeUrl').value = methods.qr_code_url || '';
+                }
+            } catch (error) {
+                console.log('No payment methods configured yet');
+            }
+        }
+
+        // ==========================================
+        // SECTION NAVIGATION
+        // ==========================================
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById('section-' + sectionName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Update desktop menu - find menu item by onclick attribute
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+                const onclick = item.getAttribute('onclick');
+                if (onclick && onclick.includes(`showSection('${sectionName}')`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Update mobile nav - find nav item by onclick attribute
+            document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+                const onclick = item.getAttribute('onclick');
+                if (onclick && onclick.includes(`showSection('${sectionName}')`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Close mobile sidebar if open
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+            }
+
+            // Scroll to top of content area
+            const contentArea = document.querySelector('.content-area');
+            if (contentArea) {
+                contentArea.scrollTop = 0;
+            }
+            window.scrollTo(0, 0);
+
+            // Update title
+            const titles = {
+                'dashboard': { title: 'Dashboard', subtitle: 'Overview and analytics' },
+                'users': { title: 'Users', subtitle: 'Manage platform users' },
+                'matches': { title: 'Matches', subtitle: 'Create and manage tournaments' },
+                'results': { title: 'Results', subtitle: 'Declare match results and distribute prizes' },
+                'deposits': { title: 'Deposits', subtitle: 'Approve or reject deposit requests' },
+                'withdrawals': { title: 'Withdrawals', subtitle: 'Process withdrawal requests' },
+                'transactions': { title: 'Transactions', subtitle: 'View all transaction history' },
+                'banners': { title: 'Banners', subtitle: 'Manage homepage and promotion banners' },
+                'announcements': { title: 'Announcements', subtitle: 'Create platform announcements' },
+                'tickets': { title: 'Support Tickets', subtitle: 'Respond to user support requests' },
+                'payment': { title: 'Payment Methods', subtitle: 'Configure UPI and QR code' }
+            };
+
+            if (titles[sectionName]) {
+                document.getElementById('sectionTitle').textContent = titles[sectionName].title;
+                const subtitleEl = document.getElementById('sectionSubtitle');
+                if (subtitleEl) {
+                    subtitleEl.textContent = titles[sectionName].subtitle;
+                }
+            }
+
+            // Load payment methods when entering that section
+            if (sectionName === 'payment') {
+                loadPaymentMethods();
+            }
+        }
+
+        // ==========================================
+        // MOBILE NAVIGATION
+        // ==========================================
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebar.classList.contains('mobile-active')) {
+                closeMobileSidebar();
+            } else {
+                openMobileSidebar();
+            }
+        }
+
+        function openMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.add('mobile-active');
+            overlay.classList.add('active');
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('mobile-active');
+            overlay.classList.remove('active');
+        }
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        function showAlert(elementId, message) {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.classList.add('show');
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function showButtonLoading(buttonTextId, loading, text) {
+            const btn = document.getElementById(buttonTextId);
+            const parentBtn = btn.parentElement;
+            
+            if (loading) {
+                btn.innerHTML = '<div class="spinner"></div>';
+                parentBtn.disabled = true;
+            } else {
+                btn.innerHTML = text;
+                parentBtn.disabled = false;
+            }
+        }
+
+        function formatDate(date) {
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-IN', options);
+        }
+
+        function formatDateTime(date) {
+            const dateStr = formatDate(date);
+            const timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            return `${dateStr} ${timeStr}`;
+        }
+
+        // ==========================================
+        // ERROR HANDLING
+        // ==========================================
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+        });
+
+        // Add active class to content sections
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('section-dashboard').classList.add('active');
+        });
+    </script>
+</body>
+</html>
