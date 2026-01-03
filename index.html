@@ -1922,6 +1922,21 @@
                             <textarea class="form-input" id="ticketMessage" placeholder="Describe your issue..." required></textarea>
                         </div>
 
+                        <div class="form-group">
+                            <label class="form-label">Screenshot (Optional)</label>
+                            <div style="margin-top: 8px;">
+                                <input type="file" id="ticketScreenshot" accept="image/*" style="display: none;" onchange="previewTicketScreenshot(event)">
+                                <div class="screenshot-upload" onclick="document.getElementById('ticketScreenshot').click()" style="border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: var(--bg-lighter);">
+                                    <div style="font-size: 32px; margin-bottom: 8px;">📷</div>
+                                    <div id="ticketScreenshotText" style="color: var(--text-secondary); font-size: 14px;">Click to upload screenshot</div>
+                                </div>
+                                <img id="ticketScreenshotPreview" style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);" />
+                            </div>
+                            <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
+                                📌 Max 2MB | JPG, PNG supported
+                            </small>
+                        </div>
+
                         <div class="alert alert-error" id="ticketError"></div>
 
                         <button type="submit" class="btn btn-primary">
@@ -3785,11 +3800,41 @@ ${referralLink}`;
             openModal('createTicketModal');
         }
 
+        // Preview ticket screenshot
+        function previewTicketScreenshot(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showAlert('ticketError', 'Please select an image file');
+                    event.target.value = '';
+                    return;
+                }
+
+                // Validate file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlert('ticketError', 'Image size must be less than 2MB');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('ticketScreenshotPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('ticketScreenshotText').textContent = '✓ Screenshot uploaded - Click to change';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         document.getElementById('createTicketForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const subject = document.getElementById('ticketSubject').value.trim();
             const message = document.getElementById('ticketMessage').value.trim();
+            const screenshotFile = document.getElementById('ticketScreenshot').files[0];
 
             if (!subject || !message) {
                 showAlert('ticketError', 'Please fill all fields');
@@ -3799,12 +3844,20 @@ ${referralLink}`;
             showButtonLoading('ticketBtnText', true);
 
             try {
+                let screenshotBase64 = null;
+
+                // Convert screenshot to base64 if provided
+                if (screenshotFile) {
+                    screenshotBase64 = await fileToBase64(screenshotFile);
+                }
+
                 const { error } = await supabaseClient
                     .from('support_tickets')
                     .insert([{
                         user_id: currentUser.id,
                         subject: subject,
                         message: message,
+                        screenshot_url: screenshotBase64,
                         status: 'open'
                     }]);
 
@@ -3813,6 +3866,8 @@ ${referralLink}`;
                 alert('Support ticket created! ✓\n\nOur team will respond soon.');
                 closeModal('createTicketModal');
                 document.getElementById('createTicketForm').reset();
+                document.getElementById('ticketScreenshotPreview').style.display = 'none';
+                document.getElementById('ticketScreenshotText').textContent = 'Click to upload screenshot';
                 await loadSupportTickets();
 
             } catch (error) {
@@ -3862,6 +3917,23 @@ ${referralLink}`;
                         <div style="margin-top: 10px; color: var(--text-secondary); white-space: pre-wrap;">${ticket.message}</div>
                     </div>
 
+                    ${ticket.screenshot_url ? `
+                        <div class="detail-box mb-20">
+                            <div class="detail-label">Screenshot</div>
+                            <div style="margin-top: 10px;">
+                                <img src="${ticket.screenshot_url}" 
+                                     style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; cursor: pointer; border: 1px solid var(--border);" 
+                                     onclick="viewFullScreenshot('${ticket.screenshot_url}')" 
+                                     alt="Ticket Screenshot" />
+                                <div style="text-align: center; margin-top: 8px;">
+                                    <button class="btn btn-outline" onclick="viewFullScreenshot('${ticket.screenshot_url}')" style="font-size: 12px; padding: 6px 12px;">
+                                        🔍 View Full Size
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+
                     ${ticket.admin_reply ? `
                         <div class="detail-box" style="background: var(--bg-lighter); border: 2px solid var(--primary);">
                             <div class="detail-label">Admin Reply</div>
@@ -3877,6 +3949,68 @@ ${referralLink}`;
             } catch (error) {
                 console.error('Error loading ticket details:', error);
             }
+        }
+
+        // View screenshot in full size
+        function viewFullScreenshot(imageUrl) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                cursor: zoom-out;
+            `;
+
+            overlay.onclick = () => overlay.remove();
+
+            // Create image
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = `
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                border-radius: 8px;
+                box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            `;
+
+            // Create close button
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                font-size: 24px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                overlay.remove();
+            };
+
+            overlay.appendChild(img);
+            overlay.appendChild(closeBtn);
+            document.body.appendChild(overlay);
         }
 
         // ==========================================
