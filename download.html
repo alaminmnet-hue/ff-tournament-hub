@@ -292,10 +292,11 @@
             // 4. Dropbox
             // 5. Your own server
             
-            const apkUrl = 'YOUR_APK_DOWNLOAD_URL_HERE';
+            const apkUrl = 'https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v1.0.0/YOUR_APK_FILENAME.apk';
+            // ⬆️ REPLACE THIS WITH YOUR ACTUAL APK URL FROM GITHUB RELEASES
             
             // If APK URL is not set, redirect to web version with referral
-            if (apkUrl === 'YOUR_APK_DOWNLOAD_URL_HERE') {
+            if (apkUrl.includes('YOUR_USERNAME') || apkUrl.includes('YOUR_APK_FILENAME')) {
                 alert('APK download will be available soon!\n\nFor now, using web version...');
                 setTimeout(() => {
                     if (refCode) {
