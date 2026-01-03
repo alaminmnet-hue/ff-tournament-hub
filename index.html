@@ -3473,8 +3473,8 @@ Both of us will get bonus! 🎁`;
             }
 
             const code = currentUserData.referral_code;
-            // Use full Vercel URL for sharing
-            const referralLink = `https://ff-tournament-hub.vercel.app/?ref=${code}`;
+            // Use download page URL for APK download + referral
+            const referralLink = `https://ff-tournament-hub.vercel.app/download?ref=${code}`;
             
             const message = `🔥 *Join FF Tournament Hub!*
 
@@ -3486,7 +3486,7 @@ Both of us will get bonus! 🎁`;
 
 🎁 *Get ₹11 Signup Bonus!*
 
-👉 *Click here to join:*
+👉 *Download app & join:*
 ${referralLink}`;
 
             // WhatsApp share URL
@@ -3513,7 +3513,7 @@ ${referralLink}`;
             }
 
             const code = currentUserData.referral_code;
-            const referralLink = `https://ff-tournament-hub.vercel.app/?ref=${code}`;
+            const referralLink = `https://ff-tournament-hub.vercel.app/download?ref=${code}`;
             
             const shareData = {
                 title: 'Join FF Tournament Hub!',
@@ -3522,7 +3522,7 @@ ${referralLink}`;
 🎮 Play Free Fire tournaments and win real money!
 🎁 Use my code: ${code} and get ₹11 bonus!
 
-👇 Click to join:`,
+👇 Download app:`,
                 url: referralLink
             };
 
@@ -3533,7 +3533,7 @@ ${referralLink}`;
                 } else {
                     // Fallback: Copy link to clipboard
                     await navigator.clipboard.writeText(referralLink);
-                    alert('✅ Link copied to clipboard!\n\nShare it anywhere you want!');
+                    alert('✅ Download link copied to clipboard!\n\nShare it anywhere you want!');
                 }
             } catch (error) {
                 if (error.name !== 'AbortError') {
