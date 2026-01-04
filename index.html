@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,19 +24,25 @@
         }
 
         :root {
-            --primary: #d946ef;  /* Bright Pink */
-            --primary-dark: #a21caf;  /* Deep Purple */
-            --secondary: #06b6d4;  /* Cyan */
-            --bg-dark: #0f0b1f;  /* Deep purple-black */
-            --bg-card: #251b3d;  /* Purple card */
-            --bg-lighter: #2d1f4a;  /* Light purple */
+            --primary: #d946ef;
+            /* Bright Pink */
+            --primary-dark: #a21caf;
+            /* Deep Purple */
+            --secondary: #06b6d4;
+            /* Cyan */
+            --bg-dark: #0f0b1f;
+            /* Deep purple-black */
+            --bg-card: #251b3d;
+            /* Purple card */
+            --bg-lighter: #2d1f4a;
+            /* Light purple */
             --text-primary: #f8fafc;
             --text-secondary: #cbd5e1;
             --success: #10b981;
             --error: #ef4444;
             --warning: #f59e0b;
             --border: rgba(217, 70, 239, 0.2);
-            
+
             /* Safe area insets for notch/curve displays */
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
@@ -65,7 +73,7 @@
             position: relative;
             overflow-x: hidden;
         }
-        
+
         /* Desktop/Tablet - Center with max width */
         @media (min-width: 768px) {
             .app-container {
@@ -148,7 +156,8 @@
             border: 2px solid var(--border);
             border-radius: 12px;
             color: var(--text-primary);
-            font-size: 16px; /* iOS Safari won't zoom on 16px */
+            font-size: 16px;
+            /* iOS Safari won't zoom on 16px */
             transition: all 0.3s;
             /* Better touch target */
             min-height: 50px;
@@ -220,8 +229,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Alert Messages */
@@ -323,8 +337,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .user-avatar {
@@ -387,7 +408,7 @@
             height: 180px;
             box-shadow: 0 8px 24px rgba(4, 242, 63, 0.792);
         }
-        
+
         /* Larger banner for bigger screens */
         @media (min-width: 400px) {
             .banner-slider {
@@ -500,10 +521,11 @@
             padding: 0 15px;
             padding-left: calc(15px + var(--safe-left));
             padding-right: calc(15px + var(--safe-right));
-            padding-bottom: calc(90px + var(--safe-bottom)); /* Space for bottom nav */
+            padding-bottom: calc(90px + var(--safe-bottom));
+            /* Space for bottom nav */
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px; /* Minimal gap */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             /* Make cards maximum bigger */
             min-height: calc(100vh - 160px);
         }
@@ -740,8 +762,15 @@
         }
 
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 2px 8px rgba(0, 210, 255, 0.6); }
-            50% { box-shadow: 0 2px 16px rgba(0, 210, 255, 1); }
+
+            0%,
+            100% {
+                box-shadow: 0 2px 8px rgba(0, 210, 255, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 2px 16px rgba(0, 210, 255, 1);
+            }
         }
 
         .tournament-header {
@@ -849,7 +878,7 @@
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4), 0 -1px 0 rgba(255, 70, 85, 0.1);
         }
-        
+
         /* Desktop/Tablet bottom nav */
         @media (min-width: 768px) {
             .bottom-nav {
@@ -1816,6 +1845,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Notification Overlay -->
@@ -1852,7 +1882,8 @@
                 <form id="signupForm" style="width: 100%;">
                     <div class="form-group">
                         <label class="form-label">Full Name</label>
-                        <input type="text" class="form-input" id="signupName" placeholder="Enter your full name" required>
+                        <input type="text" class="form-input" id="signupName" placeholder="Enter your full name"
+                            required>
                     </div>
 
                     <div class="form-group">
@@ -1862,12 +1893,14 @@
 
                     <div class="form-group">
                         <label class="form-label">Phone Number</label>
-                        <input type="tel" class="form-input" id="signupPhone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
+                        <input type="tel" class="form-input" id="signupPhone" placeholder="Enter 10-digit mobile number"
+                            pattern="[0-9]{10}" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="signupPassword" placeholder="Minimum 6 characters" required>
+                        <input type="password" class="form-input" id="signupPassword" placeholder="Minimum 6 characters"
+                            required>
                     </div>
 
                     <div class="form-group">
@@ -1904,13 +1937,18 @@
 
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password"
+                            required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
                         <span id="loginBtnText">Login</span>
                     </button>
                 </form>
+
+                <div class="auth-switch">
+                    <a href="#" onclick="showForgotPassword(); return false;">Forgot Password?</a>
+                </div>
 
                 <div class="auth-switch">
                     Don't have an account?
@@ -2013,16 +2051,19 @@
                         <button class="btn btn-outline" onclick="copyReferralCode()">
                             📋 Copy Code
                         </button>
-                        <button class="btn btn-primary" onclick="shareViaWhatsApp()" style="background: linear-gradient(135deg, #25D366, #128C7E); flex: 1;">
+                        <button class="btn btn-primary" onclick="shareViaWhatsApp()"
+                            style="background: linear-gradient(135deg, #25D366, #128C7E); flex: 1;">
                             <span style="font-size: 18px;">📱</span> Share via WhatsApp
                         </button>
                     </div>
 
-                    <button class="btn btn-outline" onclick="shareReferralLink()" style="margin-top: 10px; width: 100%;">
+                    <button class="btn btn-outline" onclick="shareReferralLink()"
+                        style="margin-top: 10px; width: 100%;">
                         🔗 Share Link (Other Apps)
                     </button>
 
-                    <div style="margin-top: 15px; padding: 12px; background: rgba(37, 211, 102, 0.1); border-radius: 8px; border: 1px solid rgba(37, 211, 102, 0.3);">
+                    <div
+                        style="margin-top: 15px; padding: 12px; background: rgba(37, 211, 102, 0.1); border-radius: 8px; border: 1px solid rgba(37, 211, 102, 0.3);">
                         <div style="font-size: 13px; color: var(--text-secondary); text-align: center;">
                             💰 <strong style="color: var(--success);">₹11 Bonus</strong> for each friend who signs up!
                         </div>
@@ -2089,10 +2130,14 @@
                 </div>
 
                 <div class="leaderboard-tabs">
-                    <div class="leaderboard-tab active" data-period="daily" onclick="switchLeaderboardPeriod('daily')">Daily</div>
-                    <div class="leaderboard-tab" data-period="weekly" onclick="switchLeaderboardPeriod('weekly')">Weekly</div>
-                    <div class="leaderboard-tab" data-period="monthly" onclick="switchLeaderboardPeriod('monthly')">Monthly</div>
-                    <div class="leaderboard-tab" data-period="alltime" onclick="switchLeaderboardPeriod('alltime')">All Time</div>
+                    <div class="leaderboard-tab active" data-period="daily" onclick="switchLeaderboardPeriod('daily')">
+                        Daily</div>
+                    <div class="leaderboard-tab" data-period="weekly" onclick="switchLeaderboardPeriod('weekly')">Weekly
+                    </div>
+                    <div class="leaderboard-tab" data-period="monthly" onclick="switchLeaderboardPeriod('monthly')">
+                        Monthly</div>
+                    <div class="leaderboard-tab" data-period="alltime" onclick="switchLeaderboardPeriod('alltime')">All
+                        Time</div>
                 </div>
 
                 <div class="leaderboard-list" id="leaderboardList"></div>
@@ -2220,7 +2265,8 @@
 
                     <div class="menu-item" onclick="logout()" style="border-color: var(--error);">
                         <div class="menu-item-left">
-                            <div class="menu-icon" style="background: rgba(255, 70, 85, 0.2); color: var(--error);">🚪</div>
+                            <div class="menu-icon" style="background: rgba(255, 70, 85, 0.2); color: var(--error);">🚪
+                            </div>
                             <div class="menu-text" style="color: var(--error);">Logout</div>
                         </div>
                         <div class="menu-arrow" style="color: var(--error);">›</div>
@@ -2279,7 +2325,8 @@
                 </div>
 
                 <div class="journey-tabs">
-                    <div class="journey-tab active" data-tab="ongoing" onclick="switchJourneyTab('ongoing')">Ongoing</div>
+                    <div class="journey-tab active" data-tab="ongoing" onclick="switchJourneyTab('ongoing')">Ongoing
+                    </div>
                     <div class="journey-tab" data-tab="upcoming" onclick="switchJourneyTab('upcoming')">Upcoming</div>
                     <div class="journey-tab" data-tab="results" onclick="switchJourneyTab('results')">Results</div>
                 </div>
@@ -2311,23 +2358,30 @@
                     <form id="addMoneyForm">
                         <div class="form-group">
                             <label class="form-label">Enter Amount</label>
-                            <input type="number" class="form-input" id="addAmount" placeholder="Min ₹20 - Max ₹10,000" min="20" max="10000" required>
+                            <input type="number" class="form-input" id="addAmount" placeholder="Min ₹20 - Max ₹10,000"
+                                min="20" max="10000" required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Transaction ID / UTR Number</label>
-                            <input type="text" class="form-input" id="transactionId" placeholder="Enter 12-digit UTR" required>
+                            <input type="text" class="form-input" id="transactionId" placeholder="Enter 12-digit UTR"
+                                required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Payment Screenshot <span style="color: var(--error);">*</span></label>
-                            <div class="screenshot-upload-box" onclick="document.getElementById('addMoneyScreenshot').click()">
+                            <label class="form-label">Payment Screenshot <span
+                                    style="color: var(--error);">*</span></label>
+                            <div class="screenshot-upload-box"
+                                onclick="document.getElementById('addMoneyScreenshot').click()">
                                 <div class="upload-icon">📸</div>
-                                <div class="upload-text" id="screenshotUploadText">Click to upload payment screenshot</div>
+                                <div class="upload-text" id="screenshotUploadText">Click to upload payment screenshot
+                                </div>
                                 <div class="upload-hint">JPG, PNG or JPEG (Max 2MB)</div>
-                                <img id="screenshotPreview" style="display: none; max-width: 100%; max-height: 200px; margin-top: 15px; border-radius: 10px;">
+                                <img id="screenshotPreview"
+                                    style="display: none; max-width: 100%; max-height: 200px; margin-top: 15px; border-radius: 10px;">
                             </div>
-                            <input type="file" id="addMoneyScreenshot" accept="image/*" style="display: none;" onchange="previewAddMoneyScreenshot(event)" required>
+                            <input type="file" id="addMoneyScreenshot" accept="image/*" style="display: none;"
+                                onchange="previewAddMoneyScreenshot(event)" required>
                         </div>
 
                         <div class="alert alert-error" id="addMoneyError"></div>
@@ -2361,7 +2415,8 @@
                     <div id="bankSection" class="hidden">
                         <div class="form-group">
                             <label class="form-label">Account Holder Name</label>
-                            <input type="text" class="form-input" id="accountHolderName" placeholder="As per bank records">
+                            <input type="text" class="form-input" id="accountHolderName"
+                                placeholder="As per bank records">
                         </div>
 
                         <div class="form-group">
@@ -2376,7 +2431,8 @@
 
                         <div class="form-group">
                             <label class="form-label">Bank Name</label>
-                            <input type="text" class="form-input" id="bankNameInput" placeholder="Select bank" onclick="openBankListModal()" readonly>
+                            <input type="text" class="form-input" id="bankNameInput" placeholder="Select bank"
+                                onclick="openBankListModal()" readonly>
                         </div>
                     </div>
 
@@ -2390,7 +2446,8 @@
 
                     <div class="form-group">
                         <label class="form-label">Withdrawal Amount</label>
-                        <input type="number" class="form-input" id="withdrawAmount" placeholder="Min ₹99 - Max ₹10,000" min="99" max="10000">
+                        <input type="number" class="form-input" id="withdrawAmount" placeholder="Min ₹99 - Max ₹10,000"
+                            min="99" max="10000">
                         <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
                             ⚠️ 5% processing charges will be deducted
                         </small>
@@ -2414,7 +2471,8 @@
                 </div>
                 <div class="modal-body" style="padding: 0;">
                     <div class="form-group" style="padding: 20px; padding-bottom: 10px;">
-                        <input type="text" class="form-input" id="bankSearchInput" placeholder="Search bank..." onkeyup="filterBanks()">
+                        <input type="text" class="form-input" id="bankSearchInput" placeholder="Search bank..."
+                            onkeyup="filterBanks()">
                     </div>
                     <div class="bank-list" id="bankList"></div>
                 </div>
@@ -2443,23 +2501,31 @@
                     <form id="createTicketForm">
                         <div class="form-group">
                             <label class="form-label">Subject</label>
-                            <input type="text" class="form-input" id="ticketSubject" placeholder="Brief subject" required>
+                            <input type="text" class="form-input" id="ticketSubject" placeholder="Brief subject"
+                                required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Message</label>
-                            <textarea class="form-input" id="ticketMessage" placeholder="Describe your issue..." required></textarea>
+                            <textarea class="form-input" id="ticketMessage" placeholder="Describe your issue..."
+                                required></textarea>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Screenshot (Optional)</label>
                             <div style="margin-top: 8px;">
-                                <input type="file" id="ticketScreenshot" accept="image/*" style="display: none;" onchange="previewTicketScreenshot(event)">
-                                <div class="screenshot-upload" onclick="document.getElementById('ticketScreenshot').click()" style="border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: var(--bg-lighter);">
+                                <input type="file" id="ticketScreenshot" accept="image/*" style="display: none;"
+                                    onchange="previewTicketScreenshot(event)">
+                                <div class="screenshot-upload"
+                                    onclick="document.getElementById('ticketScreenshot').click()"
+                                    style="border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: var(--bg-lighter);">
                                     <div style="font-size: 32px; margin-bottom: 8px;">📷</div>
-                                    <div id="ticketScreenshotText" style="color: var(--text-secondary); font-size: 14px;">Click to upload screenshot</div>
+                                    <div id="ticketScreenshotText"
+                                        style="color: var(--text-secondary); font-size: 14px;">Click to upload
+                                        screenshot</div>
                                 </div>
-                                <img id="ticketScreenshotPreview" style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);" />
+                                <img id="ticketScreenshotPreview"
+                                    style="display: none; width: 100%; max-height: 200px; object-fit: contain; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);" />
                             </div>
                             <small style="color: var(--text-secondary); display: block; margin-top: 8px;">
                                 📌 Max 2MB | JPG, PNG supported
@@ -2518,7 +2584,7 @@
         // REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS
         const SUPABASE_URL = 'https://gafxellwhhrnacymwont.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_ang4zZ5T90JwXU2iOxmxjw_4LriiG_z';
-        
+
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -2527,7 +2593,7 @@
         // ==========================================
         // Check for updates by comparing page content hash
         let currentPageHash = null;
-        
+
         function generatePageHash(content) {
             // Simple hash function
             let hash = 0;
@@ -2538,41 +2604,41 @@
             }
             return hash.toString();
         }
-        
+
         async function checkForAppUpdates() {
             try {
                 // Fetch current page from server
-                const response = await fetch(window.location.href, { 
+                const response = await fetch(window.location.href, {
                     cache: 'no-cache',
                     headers: { 'Cache-Control': 'no-cache' }
                 });
-                
+
                 if (!response.ok) return;
-                
+
                 const newPageContent = await response.text();
                 const newHash = generatePageHash(newPageContent);
-                
+
                 // Initialize hash on first check
                 if (currentPageHash === null) {
                     currentPageHash = newHash;
                     return;
                 }
-                
+
                 // Check if page changed
                 if (newHash !== currentPageHash) {
                     console.log('New update available!');
                     showUpdateBanner();
                 }
-                
+
             } catch (error) {
                 console.log('Update check skipped:', error.message);
             }
         }
-        
+
         function showUpdateBanner() {
             // Check if banner already exists
             if (document.getElementById('updateBanner')) return;
-            
+
             const banner = document.createElement('div');
             banner.id = 'updateBanner';
             banner.style.cssText = `
@@ -2590,7 +2656,7 @@
                 cursor: pointer;
                 animation: slideDown 0.3s ease;
             `;
-            
+
             banner.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                     <span style="font-size: 18px;">🔄</span>
@@ -2601,10 +2667,10 @@
                     </button>
                 </div>
             `;
-            
+
             banner.onclick = () => location.reload(true);
             document.body.appendChild(banner);
-            
+
             // Add animation
             const style = document.createElement('style');
             style.textContent = `
@@ -2615,16 +2681,16 @@
             `;
             document.head.appendChild(style);
         }
-        
+
         // Check for updates every 5 minutes
         function startUpdateChecker() {
             // Initial check after 30 seconds
             setTimeout(checkForAppUpdates, 30000);
-            
+
             // Then check every 5 minutes
             setInterval(checkForAppUpdates, 300000);
         }
-        
+
         // ==========================================
         // GLOBAL STATE
         // ==========================================
@@ -2667,7 +2733,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Start auto-update checker
             startUpdateChecker();
-            
+
             // Check for referral code in URL parameter
             checkReferralParameter();
             await checkAuthState();
@@ -2677,11 +2743,11 @@
         function checkReferralParameter() {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
-            
+
             if (refCode) {
                 // Store in sessionStorage for signup
                 sessionStorage.setItem('referralCode', refCode);
-                
+
                 // Auto-fill signup form if available
                 const signupReferralInput = document.getElementById('signupReferral');
                 if (signupReferralInput) {
@@ -2690,7 +2756,7 @@
                     signupReferralInput.style.border = '2px solid var(--success)';
                     signupReferralInput.style.background = 'rgba(0, 255, 136, 0.1)';
                 }
-                
+
                 // Show success message
                 setTimeout(() => {
                     const signupError = document.getElementById('signupError');
@@ -2700,7 +2766,7 @@
                         signupError.style.display = 'block';
                     }
                 }, 500);
-                
+
                 // Clean URL (remove ref parameter)
                 const cleanUrl = window.location.origin + window.location.pathname;
                 window.history.replaceState({}, document.title, cleanUrl);
@@ -2710,7 +2776,19 @@
         async function checkAuthState() {
             showLoading(true);
             const { data: { session } } = await supabaseClient.auth.getSession();
-            
+
+            // Check if this is a password recovery session
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+            const type = hashParams.get('type');
+
+            if (type === 'recovery' && accessToken) {
+                // User clicked password reset link
+                showPasswordUpdateForm();
+                showLoading(false);
+                return;
+            }
+
             if (session) {
                 currentUser = session.user;
                 await loadUserData();
@@ -2847,9 +2925,246 @@
             }
         });
 
+        // Password Reset Functionality
+        function showForgotPassword() {
+            const loginScreen = document.getElementById('loginScreen');
+            loginScreen.innerHTML = `
+                <div class="auth-screen">
+                    <div class="auth-logo">🔑</div>
+                    <h1 class="auth-title">Reset Password</h1>
+                    <p class="auth-subtitle">Enter your email to receive reset instructions</p>
+                    
+                    <div class="alert alert-error" id="resetError" style="display: none;"></div>
+                    <div class="alert alert-success" id="resetSuccess" style="display: none;"></div>
+                    
+                    <form id="resetPasswordForm" style="width: 100%;">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" id="resetEmail" placeholder="your@email.com" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="resetSubmitBtn">
+                            <span id="resetBtnText">Send Reset Link</span>
+                        </button>
+                    </form>
+                    
+                    <div class="auth-switch">
+                        <a href="#" onclick="showLoginScreen(); return false;">Back to Login</a>
+                    </div>
+                </div>
+            `;
+
+            // Add event listener to the new form
+            document.getElementById('resetPasswordForm').addEventListener('submit', handlePasswordReset);
+        }
+
+        async function handlePasswordReset(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value.trim();
+
+            if (!email) {
+                showAlert('resetError', 'Please enter your email address');
+                return;
+            }
+
+            showButtonLoading('resetBtnText', true);
+
+            try {
+                // Get the actual file URL for local files or use origin for hosted
+                const redirectTo = window.location.href.split('?')[0].split('#')[0];
+
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: redirectTo
+                });
+
+                if (error) throw error;
+
+                // Show success message
+                document.getElementById('resetSuccess').textContent = 'Password reset link sent! Check your email.';
+                document.getElementById('resetSuccess').style.display = 'block';
+                document.getElementById('resetError').style.display = 'none';
+
+                // Clear the form
+                document.getElementById('resetPasswordForm').reset();
+
+            } catch (error) {
+                console.error('Password reset error:', error);
+                showAlert('resetError', error.message || 'Failed to send reset link. Please try again.');
+            } finally {
+                showButtonLoading('resetBtnText', false);
+            }
+        }
+
+        function showPasswordUpdateForm() {
+            const loginScreen = document.getElementById('loginScreen');
+            loginScreen.innerHTML = `
+                <div class="auth-screen">
+                    <div class="auth-logo">🔐</div>
+                    <h1 class="auth-title">Set New Password</h1>
+                    <p class="auth-subtitle">Enter your new password below</p>
+                    
+                    <div class="alert alert-error" id="updateError" style="display: none;"></div>
+                    <div class="alert alert-success" id="updateSuccess" style="display: none;"></div>
+                    
+                    <form id="updatePasswordForm" style="width: 100%;">
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required minlength="6">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password" required minlength="6">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="updateSubmitBtn">
+                            <span id="updateBtnText">Update Password</span>
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            // Show the screen
+            showScreen('loginScreen');
+
+            // Add event listener to the new form
+            document.getElementById('updatePasswordForm').addEventListener('submit', handlePasswordUpdate);
+        }
+
+        async function handlePasswordUpdate(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                document.getElementById('updateError').textContent = 'Passwords do not match!';
+                document.getElementById('updateError').style.display = 'block';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                document.getElementById('updateError').textContent = 'Password must be at least 6 characters';
+                document.getElementById('updateError').style.display = 'block';
+                return;
+            }
+
+            showButtonLoading('updateBtnText', true);
+
+            try {
+                const { error } = await supabaseClient.auth.updateUser({
+                    password: newPassword
+                });
+
+                if (error) throw error;
+
+                // Show success message
+                document.getElementById('updateSuccess').textContent = 'Password updated successfully! Redirecting to login...';
+                document.getElementById('updateSuccess').style.display = 'block';
+                document.getElementById('updateError').style.display = 'none';
+
+                // Clear URL hash
+                window.history.replaceState(null, '', window.location.pathname);
+
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    showLoginScreen();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Password update error:', error);
+                document.getElementById('updateError').textContent = error.message || 'Failed to update password. Please try again.';
+                document.getElementById('updateError').style.display = 'block';
+            } finally {
+                showButtonLoading('updateBtnText', false);
+            }
+        }
+
+        function showLoginScreen() {
+            const loginScreen = document.getElementById('loginScreen');
+            loginScreen.innerHTML = `
+                <div class="auth-screen">
+                    <div class="auth-logo">🔥</div>
+                    <h1 class="auth-title">Welcome Back</h1>
+                    <p class="auth-subtitle">Login to continue playing</p>
+                    
+                    <div class="alert alert-error" id="loginError" style="display: none;"></div>
+                    
+                    <form id="loginForm" style="width: 100%;">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span id="loginBtnText">Login</span>
+                        </button>
+                    </form>
+                    
+                    <div class="auth-switch">
+                        <a href="#" onclick="showForgotPassword(); return false;">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="auth-switch">
+                        Don't have an account?
+                        <a href="#" onclick="showScreen('signupScreen'); return false;">Sign Up</a>
+                    </div>
+                </div>
+            `;
+
+            // Re-add the login form event listener
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                showButtonLoading('loginBtnText', true);
+
+                try {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    });
+
+                    if (error) throw error;
+
+                    currentUser = data.user;
+                    await loadUserData();
+                    showScreen('homeScreen');
+                    startNotificationAutoRefresh();
+
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showAlert('loginError', error.message || 'Invalid credentials');
+                } finally {
+                    showButtonLoading('loginBtnText', false);
+                }
+            });
+        }
+
+        // Helper function for showing alerts
+        function showAlert(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+
+                // Auto-hide error messages after 5 seconds
+                if (elementId.includes('Error')) {
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                    }, 5000);
+                }
+            }
+        }
+
         async function logout() {
             if (!confirm('Are you sure you want to logout?')) return;
-            
+
             showLoading(true);
             stopNotificationAutoRefresh(); // Stop notification refresh
             await supabaseClient.auth.signOut();
@@ -2943,24 +3258,24 @@
         function openNotificationPanel() {
             const panel = document.getElementById('notificationPanel');
             const overlay = document.getElementById('notificationOverlay');
-            
+
             panel.classList.add('active');
             overlay.classList.add('active');
-            
+
             displayNotifications();
         }
 
         function closeNotificationPanel() {
             const panel = document.getElementById('notificationPanel');
             const overlay = document.getElementById('notificationOverlay');
-            
+
             panel.classList.remove('active');
             overlay.classList.remove('active');
         }
 
         function displayNotifications() {
             const list = document.getElementById('notificationList');
-            
+
             if (notificationsData.length === 0) {
                 list.innerHTML = `
                     <div class="notification-empty">
@@ -2976,7 +3291,7 @@
                 const icon = getNotificationIcon(notification.type);
                 const time = formatNotificationTime(new Date(notification.created_at));
                 const unreadClass = notification.is_read ? '' : 'unread';
-                
+
                 return `
                     <div class="notification-item ${unreadClass}" onclick="markNotificationAsRead('${notification.id}')">
                         <div class="notification-item-header">
@@ -3014,7 +3329,7 @@
             if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
             if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
             if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-            
+
             return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
         }
 
@@ -3171,7 +3486,7 @@
             if (journeyRefreshInterval) {
                 clearInterval(journeyRefreshInterval);
             }
-            
+
             // Refresh every 30 seconds
             journeyRefreshInterval = setInterval(async () => {
                 // Only refresh if user is on tournament screen
@@ -3301,14 +3616,14 @@
                 const emptySlots = totalSlots - modeCards.length;
 
                 let html = '';
-                
+
                 // Render mode cards
                 modeCards.forEach(mode => {
                     const totalMatches = matchCounts[mode.mode_name] || 0;
                     const activeMatches = ongoingCounts[mode.mode_name] || 0;
                     html += renderModeCard(mode.mode_name, mode.banner_url, totalMatches, activeMatches);
                 });
-                
+
                 // Render empty slots
                 for (let i = 0; i < emptySlots; i++) {
                     html += renderEmptySlot(i);
@@ -3352,7 +3667,7 @@
         async function showModeMatches(modeName) {
             try {
                 showLoading(true);
-                
+
                 const { data: matches, error } = await supabaseClient
                     .from('matches')
                     .select('*')
@@ -3384,7 +3699,7 @@
         function renderMatchDetailCard(match) {
             const matchDate = new Date(match.match_date);
             const slotsPercentage = (match.current_players / match.max_players) * 100;
-            
+
             let statusBadge = '';
             if (match.status === 'open') {
                 statusBadge = '<div class="detail-badge open">OPEN</div>';
@@ -3431,7 +3746,7 @@
 
         function renderTournamentCard(match, join = null) {
             const isJoined = join !== null;
-            
+
             let badge = '';
             if (isJoined) {
                 if (join.position !== null) {
@@ -3454,8 +3769,8 @@
                 statusBadge = '<div class="match-status-badge completed">🏁 ENDED</div>';
             }
 
-            const bannerUrl = (match.banner_url && match.banner_url.trim()) 
-                ? match.banner_url 
+            const bannerUrl = (match.banner_url && match.banner_url.trim())
+                ? match.banner_url
                 : `https://via.placeholder.com/300x300/1a1a2e/ff4655?text=${encodeURIComponent(match.title)}`;
 
             return `
@@ -3474,7 +3789,7 @@
                 t.classList.toggle('active', t.dataset.tab === tab);
             });
             loadJourneyMatches();
-            
+
             // Also refresh wallet when switching to results tab to show new prizes
             if (tab === 'results') {
                 loadWalletData();
@@ -3770,7 +4085,7 @@
                     list.innerHTML = transactions.map(tx => {
                         const date = new Date(tx.created_at);
                         const isCredit = tx.type === 'credit';
-                        
+
                         let statusBadge = '';
                         if (tx.status === 'pending') {
                             statusBadge = '<div class="transaction-status status-pending">Pending</div>';
@@ -3830,7 +4145,7 @@
 
                 if (methods) {
                     document.getElementById('adminUpiId').textContent = methods.upi_id || 'Not configured';
-                    
+
                     if (methods.qr_code_url) {
                         document.getElementById('paymentQrImage').src = methods.qr_code_url;
                         document.getElementById('paymentQrImage').style.display = 'block';
@@ -3846,7 +4161,7 @@
 
         document.getElementById('addMoneyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const amount = parseFloat(document.getElementById('addAmount').value);
             const txnId = document.getElementById('transactionId').value.trim();
             const screenshotFile = document.getElementById('addMoneyScreenshot').files[0];
@@ -3992,7 +4307,7 @@
         function filterBanks() {
             const search = document.getElementById('bankSearchInput').value.toLowerCase();
             const filteredBanks = INDIAN_BANKS.filter(bank => bank.toLowerCase().includes(search));
-            
+
             const bankList = document.getElementById('bankList');
             bankList.innerHTML = filteredBanks.map(bank => `
                 <div class="bank-item" onclick="selectBank('${bank}')">${bank}</div>
@@ -4054,7 +4369,7 @@
 
             } else if (method === 'upi') {
                 const upiId = document.getElementById('withdrawUpiId').value.trim();
-                
+
                 if (!upiId) {
                     showAlert('withdrawError', 'Please enter UPI ID');
                     return;
@@ -4068,7 +4383,7 @@
 Requested: ₹${requestedAmount.toFixed(2)}
 Charges (5%): -₹${charges.toFixed(2)}
 You receive: ₹${netAmount.toFixed(2)}`;
-            
+
             if (!confirm(confirmMessage)) {
                 return;
             }
@@ -4123,7 +4438,7 @@ Your request will be processed by admin.`);
         async function loadReferralData() {
             try {
                 console.log('Loading referral data for user:', currentUser.id);
-                
+
                 // Get referrals
                 const { data: referrals, error: refError } = await supabaseClient
                     .from('referrals')
@@ -4227,7 +4542,7 @@ Your request will be processed by admin.`);
 Use my referral code: ${code}
 
 Both of us will get bonus! 🎁`;
-            
+
             if (navigator.share) {
                 navigator.share({
                     title: 'Join FF Tournament Hub',
@@ -4249,7 +4564,7 @@ Both of us will get bonus! 🎁`;
             const code = currentUserData.referral_code;
             // Use download page URL for APK download + referral
             const referralLink = `https://ff-tournament-hub.vercel.app/download.html?ref=${code}`;
-            
+
             const message = `🔥 *Join FF Tournament Hub!*
 
 🎮 Play Free Fire Tournaments
@@ -4265,7 +4580,7 @@ ${referralLink}`;
 
             // WhatsApp share URL
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            
+
             // Open WhatsApp
             if (window.ReactNativeWebView) {
                 // If running in WebView/App
@@ -4288,7 +4603,7 @@ ${referralLink}`;
 
             const code = currentUserData.referral_code;
             const referralLink = `https://ff-tournament-hub.vercel.app/download.html?ref=${code}`;
-            
+
             const shareData = {
                 title: 'Join FF Tournament Hub!',
                 text: `🔥 Join FF Tournament Hub!
@@ -4409,33 +4724,33 @@ ${referralLink}`;
                     .select('user_id, position, prize_won, created_at')
                     .not('position', 'is', null)
                     .order('prize_won', { ascending: false });
-                
+
                 // Apply date filter if not "All Time"
                 if (currentLeaderboardPeriod !== 'alltime') {
                     query = query.gte('created_at', startDate.toISOString());
                 }
-                
+
                 const { data: matchJoins, error } = await query;
 
                 if (error) throw error;
 
                 // Get unique user IDs
                 const userIds = [...new Set(matchJoins?.map(j => j.user_id) || [])];
-                
+
                 // Create user lookup map
                 const userMap = {};
-                
+
                 // Fetch user details separately (only if we have user IDs)
                 if (userIds.length > 0) {
                     const { data: usersData, error: usersError } = await supabaseClient
                         .from('users')
                         .select('id, full_name, email')
                         .in('id', userIds);
-                    
+
                     if (usersError) {
                         console.error('Error fetching users:', usersError);
                     }
-                    
+
                     if (usersData) {
                         usersData.forEach(user => {
                             userMap[user.id] = user;
@@ -4449,7 +4764,7 @@ ${referralLink}`;
                     matchJoins.forEach(join => {
                         const user = userMap[join.user_id];
                         if (!user || !user.full_name) return;
-                        
+
                         if (!userStats[join.user_id]) {
                             userStats[join.user_id] = {
                                 userId: join.user_id,
@@ -4950,7 +5265,7 @@ ${referralLink}`;
         async function uploadScreenshot(matchId, joinId) {
             const fileInput = document.getElementById(`screenshotInput_${matchId}`);
             const file = fileInput.files[0];
-            
+
             if (!file) return;
 
             // Validate file type
@@ -4983,7 +5298,7 @@ ${referralLink}`;
                 if (error) throw error;
 
                 alert('✅ Screenshot uploaded successfully!\n\nAdmin will review and update your results.');
-                
+
                 // Reload match details
                 await showMatchDetails(matchId);
 
@@ -5016,4 +5331,5 @@ ${referralLink}`;
         });
     </script>
 </body>
+
 </html>
