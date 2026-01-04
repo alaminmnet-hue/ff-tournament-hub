@@ -9,6 +9,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FF Tournament">
     <meta name="description" content="Play Free Fire tournaments and win real money prizes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>FF Tournament Hub - Real Money Esports</title>
     <style>
         * {
@@ -252,7 +255,7 @@
 
         /* Top Bar */
         .top-bar {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(20, 20, 40, 0.95));
             padding: 15px 20px;
             /* Safe area padding for notch */
             padding-top: calc(15px + var(--safe-top));
@@ -261,12 +264,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(255, 70, 85, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .top-bar-left {
@@ -333,19 +337,27 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            border: 2px solid var(--border);
+            border: 2px solid rgba(255, 70, 85, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 70, 85, 0.4);
+            transition: all 0.3s;
+        }
+
+        .user-avatar:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 70, 85, 0.6);
         }
 
         .wallet-balance {
-            background: var(--bg-lighter);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.15), rgba(0, 210, 255, 0.15));
+            padding: 10px 18px;
+            border-radius: 25px;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            border: 1px solid var(--border);
+            border: 1.5px solid rgba(37, 211, 102, 0.4);
             transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
         }
 
         .wallet-balance:active {
@@ -488,22 +500,243 @@
             padding-left: calc(20px + var(--safe-left));
             padding-right: calc(20px + var(--safe-right));
             padding-bottom: calc(90px + var(--safe-bottom)); /* Space for bottom nav */
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
 
         .tournament-card {
             background: var(--bg-card);
-            border-radius: 15px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 70, 85, 0.2);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            aspect-ratio: 1;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .tournament-card:active {
+            transform: scale(0.97) translateY(2px);
+            box-shadow: 0 4px 12px rgba(255, 70, 85, 0.4);
+        }
+
+        .tournament-card:not(.empty-slot):hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 32px rgba(255, 70, 85, 0.5), 0 0 20px rgba(255, 70, 85, 0.3);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        /* Empty Slot */
+        .tournament-card.empty-slot {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5), rgba(37, 37, 65, 0.3));
+            border: 2px dashed var(--border);
+            cursor: default;
+            opacity: 0.6;
+        }
+
+        .empty-slot-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .empty-slot-icon {
+            font-size: 32px;
+            opacity: 0.4;
+        }
+
+        .empty-slot-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Mode Matches Badge */
+        .mode-matches-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Match Detail Cards (in modal) */
+        .matches-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .match-detail-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
             padding: 15px;
-            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .tournament-card:active {
-            transform: scale(0.98);
+        .match-detail-card:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .match-detail-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .match-detail-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .match-detail-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .detail-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .detail-badge.open {
+            background: var(--primary);
+            color: white;
+        }
+
+        .detail-badge.ongoing {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: white;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .match-detail-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .detail-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-info-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .detail-info-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .detail-info-value.prize {
+            color: var(--secondary);
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .match-detail-slots {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Tournament Card Image */
+        .tournament-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Tournament Card Label */
+        .tournament-card-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Badge on card */
+        .tournament-card-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Match Status Badge (top-left) */
+        .match-status-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(255, 70, 85, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        .match-status-badge.open {
+            background: var(--primary);
+        }
+
+        .match-status-badge.ongoing {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .match-status-badge.completed {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 2px 8px rgba(0, 210, 255, 0.6); }
+            50% { box-shadow: 0 2px 16px rgba(0, 210, 255, 1); }
         }
 
         .tournament-header {
@@ -597,8 +830,8 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 100vw;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(20, 20, 40, 0.95), rgba(26, 26, 46, 0.98));
+            border-top: 1px solid rgba(255, 70, 85, 0.2);
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
@@ -607,8 +840,9 @@
             padding-left: var(--safe-left);
             padding-right: var(--safe-right);
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4), 0 -1px 0 rgba(255, 70, 85, 0.1);
         }
         
         /* Desktop/Tablet bottom nav */
@@ -625,28 +859,55 @@
             gap: 4px;
             cursor: pointer;
             flex: 1;
-            padding: 5px;
-            transition: all 0.3s;
+            padding: 8px 5px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .nav-item:active {
+            transform: scale(0.92);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 70, 85, 0.1);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 3px 3px;
+            box-shadow: 0 2px 8px rgba(255, 70, 85, 0.6);
         }
 
         .nav-icon {
             font-size: 24px;
             color: var(--text-secondary);
             transition: all 0.3s;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .nav-label {
             font-size: 11px;
             color: var(--text-secondary);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .nav-item.active .nav-icon {
             color: var(--primary);
+            transform: translateY(-2px) scale(1.1);
+            filter: drop-shadow(0 4px 8px rgba(255, 70, 85, 0.5));
         }
 
         .nav-item.active .nav-label {
             color: var(--primary);
+            font-weight: 700;
         }
 
         /* Promotion Screen */
@@ -1679,27 +1940,26 @@
                     <div class="banner-dots" id="bannerDots"></div>
                 </div>
 
-                <!-- My Tournament Journey -->
-                <div class="section-header">
-                    <h2 class="section-title">My Tournament Journey</h2>
-                    <p class="section-subtitle">Track your gaming progress</p>
-                </div>
-
-                <div class="journey-tabs">
-                    <div class="journey-tab active" data-tab="ongoing" onclick="switchJourneyTab('ongoing')">Ongoing</div>
-                    <div class="journey-tab" data-tab="upcoming" onclick="switchJourneyTab('upcoming')">Upcoming</div>
-                    <div class="journey-tab" data-tab="results" onclick="switchJourneyTab('results')">Results</div>
-                </div>
-
-                <div class="tournament-list" id="journeyList"></div>
-
                 <!-- Exclusive Tournaments -->
                 <div class="section-header">
                     <h2 class="section-title">Exclusive Tournaments</h2>
-                    <p class="section-subtitle">Join and win big prizes</p>
+                    <p class="section-subtitle">Choose your game mode</p>
                 </div>
 
                 <div class="tournament-list" id="exclusiveTournaments"></div>
+
+                <!-- Matches Detail Modal -->
+                <div class="modal" id="modeMatchesModal">
+                    <div class="modal-content large">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="modeMatchesTitle">Matches</h3>
+                            <button class="modal-close" onclick="closeModal('modeMatchesModal')">✕</button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="modeMatchesList" class="matches-detail-list"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Bottom Navigation -->
@@ -1921,10 +2181,10 @@
                         <div class="menu-arrow">›</div>
                     </div>
 
-                    <div class="menu-item" onclick="showMyMatches()">
+                    <div class="menu-item" onclick="showMyTournamentJourney()">
                         <div class="menu-item-left">
                             <div class="menu-icon">🎮</div>
-                            <div class="menu-text">My Matches</div>
+                            <div class="menu-text">My Tournament Journey</div>
                         </div>
                         <div class="menu-arrow">›</div>
                     </div>
@@ -2002,6 +2262,24 @@
                 </div>
 
                 <div class="ticket-list" id="ticketList"></div>
+            </div>
+        </div>
+
+        <!-- MY TOURNAMENT JOURNEY SCREEN -->
+        <div class="screen" id="myTournamentJourneyScreen">
+            <div class="main-screen">
+                <div class="top-bar">
+                    <h2 class="section-title" style="margin: 0;">My Tournament Journey</h2>
+                    <button class="modal-close" onclick="showScreen('profileScreen')">✕</button>
+                </div>
+
+                <div class="journey-tabs">
+                    <div class="journey-tab active" data-tab="ongoing" onclick="switchJourneyTab('ongoing')">Ongoing</div>
+                    <div class="journey-tab" data-tab="upcoming" onclick="switchJourneyTab('upcoming')">Upcoming</div>
+                    <div class="journey-tab" data-tab="results" onclick="switchJourneyTab('results')">Results</div>
+                </div>
+
+                <div class="tournament-list" id="journeyList"></div>
             </div>
         </div>
 
@@ -2605,7 +2883,7 @@
                 // Update UI
                 updateUserUI();
                 await loadBanners();
-                await loadTournaments();
+                await loadExclusiveMatches();
                 await loadTransactions();
                 await loadReferralData();
                 await loadNotifications(); // Load notifications
@@ -2985,138 +3263,199 @@
                 const list = document.getElementById('exclusiveTournaments');
                 list.innerHTML = '<div class="empty-state"><div class="spinner" style="margin: 20px auto;"></div></div>';
 
-                const { data: matches, error } = await supabaseClient
-                    .from('matches')
+                // Load game modes from database
+                const { data: gameModes, error } = await supabaseClient
+                    .from('game_modes')
                     .select('*')
-                    .eq('status', 'open')
-                    .order('match_date', { ascending: true })
-                    .limit(10);
+                    .eq('active', true)
+                    .order('display_order', { ascending: true });
 
                 if (error) throw error;
 
-                if (matches && matches.length > 0) {
-                    list.innerHTML = matches.map(match => renderTournamentCard(match, null)).join('');
-                } else {
-                    list.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">🏆</div>
-                            <div class="empty-title">No tournaments available</div>
-                            <div class="empty-subtitle">Check back soon for new tournaments</div>
-                        </div>
-                    `;
+                // Get match counts for each mode
+                const { data: matches, error: matchError } = await supabaseClient
+                    .from('matches')
+                    .select('title, status')
+                    .in('status', ['open', 'ongoing']);
+
+                if (matchError) throw matchError;
+
+                // Count matches per mode
+                const matchCounts = {};
+                const ongoingCounts = {};
+                (matches || []).forEach(match => {
+                    matchCounts[match.title] = (matchCounts[match.title] || 0) + 1;
+                    if (match.status === 'ongoing') {
+                        ongoingCounts[match.title] = (ongoingCounts[match.title] || 0) + 1;
+                    }
+                });
+
+                // Fixed 9 slots
+                const totalSlots = 9;
+                const modeCards = gameModes || [];
+                const emptySlots = totalSlots - modeCards.length;
+
+                let html = '';
+                
+                // Render mode cards
+                modeCards.forEach(mode => {
+                    const totalMatches = matchCounts[mode.mode_name] || 0;
+                    const activeMatches = ongoingCounts[mode.mode_name] || 0;
+                    html += renderModeCard(mode.mode_name, mode.banner_url, totalMatches, activeMatches);
+                });
+                
+                // Render empty slots
+                for (let i = 0; i < emptySlots; i++) {
+                    html += renderEmptySlot(i);
                 }
+
+                list.innerHTML = html;
 
             } catch (error) {
                 console.error('Error loading exclusive matches:', error);
             }
         }
 
-        function renderTournamentCard(match, join = null) {
-            const slotsPercentage = (match.current_players / match.max_players) * 100;
-            const matchDate = new Date(match.match_date);
-            const isJoined = join !== null;
-            const isCompleted = match.status === 'completed';
+        function renderModeCard(modeName, bannerUrl, totalMatches, activeMatches) {
+            const defaultBanner = `https://via.placeholder.com/300x300/1a1a2e/ff4655?text=${encodeURIComponent(modeName)}`;
+            const banner = (bannerUrl && bannerUrl.trim()) ? bannerUrl : defaultBanner;
 
+            return `
+                <div class="tournament-card" onclick="showModeMatches('${modeName}')">
+                    <img src="${banner}" alt="${modeName}" class="tournament-card-image" onerror="this.src='${defaultBanner}'">
+                    ${activeMatches > 0 ? `<div class="match-status-badge ongoing">▶️ ${activeMatches} LIVE</div>` : ''}
+                    <div class="mode-matches-badge">${totalMatches} Match${totalMatches > 1 ? 'es' : ''}</div>
+                    <div class="tournament-card-label">${modeName}</div>
+                </div>
+            `;
+        }
+
+        function renderEmptySlot(index) {
+            return `
+                <div class="tournament-card empty-slot">
+                    <div class="empty-slot-content">
+                        <div class="empty-slot-icon">🎮</div>
+                        <div class="empty-slot-text">Coming Soon</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function showModeMatches(modeName) {
+            try {
+                showLoading(true);
+                
+                const { data: matches, error } = await supabaseClient
+                    .from('matches')
+                    .select('*')
+                    .eq('title', modeName)
+                    .in('status', ['open', 'ongoing'])
+                    .order('match_date', { ascending: true });
+
+                if (error) throw error;
+
+                const list = document.getElementById('modeMatchesList');
+                document.getElementById('modeMatchesTitle').textContent = modeName;
+
+                if (matches && matches.length > 0) {
+                    list.innerHTML = matches.map(match => renderMatchDetailCard(match)).join('');
+                } else {
+                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-title">No matches available</div></div>';
+                }
+
+                openModal('modeMatchesModal');
+
+            } catch (error) {
+                console.error('Error loading mode matches:', error);
+                alert('Failed to load matches');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderMatchDetailCard(match) {
+            const matchDate = new Date(match.match_date);
+            const slotsPercentage = (match.current_players / match.max_players) * 100;
+            
+            let statusBadge = '';
+            if (match.status === 'open') {
+                statusBadge = '<div class="detail-badge open">OPEN</div>';
+            } else if (match.status === 'ongoing') {
+                statusBadge = '<div class="detail-badge ongoing">▶️ LIVE</div>';
+            }
+
+            return `
+                <div class="match-detail-card" onclick="showMatchDetails('${match.id}')">
+                    <div class="match-detail-header-row">
+                        <div>
+                            <div class="match-detail-title">${match.title}</div>
+                            <div class="match-detail-subtitle">${match.match_type} • ${match.map}</div>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    <div class="match-detail-info-grid">
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">🏆 Prize Pool</span>
+                            <span class="detail-info-value prize">₹${match.prize_pool}</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">🎫 Entry Fee</span>
+                            <span class="detail-info-value">₹${match.entry_fee}</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">📅 Match Date</span>
+                            <span class="detail-info-value">${formatDate(matchDate)}</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">👥 Players</span>
+                            <span class="detail-info-value">${match.current_players}/${match.max_players}</span>
+                        </div>
+                    </div>
+                    <div class="match-detail-slots">
+                        <div class="slots-bar">
+                            <div class="slots-fill" style="width: ${slotsPercentage}%;"></div>
+                        </div>
+                        <div class="slots-text">${match.current_players}/${match.max_players} Joined</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTournamentCard(match, join = null) {
+            const isJoined = join !== null;
+            
             let badge = '';
             if (isJoined) {
                 if (join.position !== null) {
-                    // Show rank with medal emoji
                     const medal = join.position === 1 ? '🥇' : join.position === 2 ? '🥈' : join.position === 3 ? '🥉' : '🏅';
-                    badge = `<div class="tournament-badge" style="background: var(--success);">${medal} Rank #${join.position}</div>`;
+                    badge = `<div class="tournament-card-badge" style="background: var(--success);">${medal} #${join.position}</div>`;
                 } else {
-                    badge = '<div class="tournament-badge" style="background: var(--success);">Joined</div>';
+                    badge = '<div class="tournament-card-badge" style="background: var(--success);">JOINED</div>';
                 }
             } else {
-                badge = '<div class="tournament-badge">Open</div>';
+                badge = '<div class="tournament-card-badge">OPEN</div>';
             }
 
-            // Banner image section
-            const bannerSection = match.banner_url ? `
-                <div style="width: 100%; height: 120px; border-radius: 12px 12px 0 0; overflow: hidden; position: relative;">
-                    <img src="${match.banner_url}" 
-                         alt="${match.title}" 
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.style.display='none'; this.parentElement.style.display='none';">
-                    <div style="position: absolute; top: 10px; right: 10px;">${badge}</div>
-                </div>
-            ` : '';
+            // Match status badge (top-left)
+            let statusBadge = '';
+            if (match.status === 'open') {
+                statusBadge = '<div class="match-status-badge open">OPEN</div>';
+            } else if (match.status === 'ongoing') {
+                statusBadge = '<div class="match-status-badge ongoing">▶️ LIVE</div>';
+            } else if (match.status === 'completed') {
+                statusBadge = '<div class="match-status-badge completed">🏁 ENDED</div>';
+            }
 
-            // Performance stats for completed matches
-            const performanceSection = isJoined && isCompleted && join.position ? `
-                <div style="margin-top: 12px; padding: 12px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 210, 255, 0.1)); border-radius: 8px; border: 1px solid rgba(0, 255, 136, 0.3); position: relative; overflow: hidden;">
-                    <!-- NEW RESULT Badge -->
-                    <div style="position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, #ff4655, #ff8800); color: white; padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; box-shadow: 0 2px 8px rgba(255,70,85,0.4); animation: bounceIn 0.6s;">
-                        ✨ NEW RESULT
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Your Performance</div>
-                            <div style="display: flex; gap: 15px;">
-                                <div>
-                                    <span style="font-size: 10px; color: var(--text-secondary);">Kills:</span>
-                                    <strong style="color: var(--success); margin-left: 4px;">${join.kills || 0}</strong>
-                                </div>
-                                ${join.prize_won > 0 ? `
-                                    <div>
-                                        <span style="font-size: 10px; color: var(--text-secondary);">Won:</span>
-                                        <strong style="color: var(--success); margin-left: 4px; font-size: 14px;">₹${join.prize_won}</strong>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                        ${join.screenshot_url ? `
-                            <div onclick="event.stopPropagation(); window.open('${join.screenshot_url}', '_blank');" style="cursor: pointer;">
-                                <div style="font-size: 20px; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 6px;" title="View Screenshot">📸</div>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-                <style>
-                    @keyframes bounceIn {
-                        0% { transform: scale(0); opacity: 0; }
-                        50% { transform: scale(1.1); }
-                        100% { transform: scale(1); opacity: 1; }
-                    }
-                </style>
-            ` : '';
+            const bannerUrl = (match.banner_url && match.banner_url.trim()) 
+                ? match.banner_url 
+                : `https://via.placeholder.com/300x300/1a1a2e/ff4655?text=${encodeURIComponent(match.title)}`;
 
             return `
-                <div class="tournament-card" onclick="showMatchDetails('${match.id}')" style="${match.banner_url ? 'padding: 0;' : ''}">
-                    ${bannerSection}
-                    <div style="${match.banner_url ? 'padding: 15px;' : ''}">
-                        <div class="tournament-header" style="${match.banner_url ? 'margin-top: 0;' : ''}">
-                            <div>
-                                <div class="tournament-name">${match.title}</div>
-                                <div class="tournament-prize">₹${match.prize_pool}</div>
-                            </div>
-                            ${match.banner_url ? '' : badge}
-                        </div>
-                        <div class="tournament-info">
-                            <div class="info-item">
-                                <div class="info-label">Entry Fee</div>
-                                <div class="info-value">₹${match.entry_fee}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Match Date</div>
-                                <div class="info-value">${formatDate(matchDate)}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Map</div>
-                                <div class="info-value">${match.map || 'Bermuda'}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Type</div>
-                                <div class="info-value">${match.match_type || 'Solo'}</div>
-                            </div>
-                        </div>
-                        ${performanceSection}
-                        <div class="tournament-footer">
-                            <div class="slots-bar">
-                                <div class="slots-fill" style="width: ${slotsPercentage}%;"></div>
-                            </div>
-                            <div class="slots-text">${match.current_players}/${match.max_players}</div>
-                        </div>
-                    </div>
+                <div class="tournament-card" onclick="showMatchDetails('${match.id}')">
+                    <img src="${bannerUrl}" alt="${match.title}" class="tournament-card-image" onerror="this.src='https://via.placeholder.com/300x300/1a1a2e/ff4655?text=Tournament'">
+                    ${statusBadge}
+                    ${badge}
+                    <div class="tournament-card-label">${match.title}</div>
                 </div>
             `;
         }
@@ -3775,6 +4114,8 @@ Your request will be processed by admin.`);
         // ==========================================
         async function loadReferralData() {
             try {
+                console.log('Loading referral data for user:', currentUser.id);
+                
                 // Get referrals
                 const { data: referrals, error: refError } = await supabaseClient
                     .from('referrals')
@@ -3785,11 +4126,20 @@ Your request will be processed by admin.`);
                     .eq('referrer_user_id', currentUser.id)
                     .order('created_at', { ascending: false });
 
-                if (refError) throw refError;
+                console.log('Referrals data:', referrals);
+                console.log('Referrals error:', refError);
+
+                if (refError) {
+                    console.error('Referral query error:', refError);
+                    throw refError;
+                }
 
                 // Update stats
                 const totalReferrals = referrals ? referrals.length : 0;
                 const totalEarnings = referrals ? referrals.reduce((sum, ref) => sum + (ref.bonus_amount || 0), 0) : 0;
+
+                console.log('Total Referrals:', totalReferrals);
+                console.log('Total Earnings:', totalEarnings);
 
                 document.getElementById('totalReferrals').textContent = totalReferrals;
                 document.getElementById('referralEarnings').textContent = totalEarnings.toFixed(2);
@@ -4475,14 +4825,12 @@ ${referralLink}`;
         }
 
         // ==========================================
-        // MY MATCHES
+        // MY TOURNAMENT JOURNEY
         // ==========================================
-        function showMyMatches() {
-            showScreen('homeScreen');
-            // Trigger the results tab to show all past matches
-            setTimeout(() => {
-                switchJourneyTab('results');
-            }, 300);
+        function showMyTournamentJourney() {
+            showScreen('myTournamentJourneyScreen');
+            loadJourneyMatches();
+            startJourneyAutoRefresh();
         }
 
         // ==========================================
@@ -4494,8 +4842,8 @@ ${referralLink}`;
             });
             document.getElementById(screenId).classList.add('active');
 
-            // Stop auto-refresh when leaving home screen
-            if (screenId !== 'homeScreen') {
+            // Stop auto-refresh when leaving screens with journey
+            if (screenId !== 'homeScreen' && screenId !== 'myTournamentJourneyScreen') {
                 stopJourneyAutoRefresh();
             }
 
@@ -4519,8 +4867,12 @@ ${referralLink}`;
 
             // Load data when switching screens
             if (screenId === 'homeScreen' && currentUser) {
-                loadTournaments();
-                startJourneyAutoRefresh(); // Start auto-refresh for journey
+                loadExclusiveMatches();
+            } else if (screenId === 'promotionScreen' && currentUser) {
+                loadReferralData();
+            } else if (screenId === 'myTournamentJourneyScreen' && currentUser) {
+                loadJourneyMatches();
+                startJourneyAutoRefresh();
             } else if (screenId === 'leaderboardScreen' && currentUser) {
                 loadLeaderboard();
             }
