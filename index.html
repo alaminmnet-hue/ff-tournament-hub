@@ -383,15 +383,15 @@
             margin: 15px;
             margin-left: calc(15px + var(--safe-left));
             margin-right: calc(15px + var(--safe-right));
-            border-radius: 16px;
+            border-radius: 15px;
             height: 180px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 24px rgba(4, 242, 63, 0.792);
         }
         
         /* Larger banner for bigger screens */
-        @media (min-width: 375px) {
+        @media (min-width: 400px) {
             .banner-slider {
-                height: 200px;
+                height: 240px;
             }
         }
 
@@ -497,28 +497,29 @@
 
         /* Tournament Cards */
         .tournament-list {
-            padding: 0 20px;
-            padding-left: calc(20px + var(--safe-left));
-            padding-right: calc(20px + var(--safe-right));
+            padding: 0 15px;
+            padding-left: calc(15px + var(--safe-left));
+            padding-right: calc(15px + var(--safe-right));
             padding-bottom: calc(90px + var(--safe-bottom)); /* Space for bottom nav */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px; /* Perfect gap */
-            /* Medium card size */
-            min-height: 320px;
+            gap: 6px; /* Minimal gap */
+            /* Make cards maximum bigger */
+            min-height: calc(100vh - 160px);
         }
 
-        /* Perfect square cards */
+        /* Maximum bigger cards */
         .tournament-card {
             background: var(--bg-card);
-            border-radius: 14px;
+            border-radius: 18px;
             overflow: hidden;
             border: 2px solid rgba(255, 70, 85, 0.2);
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            aspect-ratio: 1; /* Perfect square */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 1;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+            height: auto;
         }
 
         .tournament-card:active {
