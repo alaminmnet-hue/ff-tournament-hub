@@ -22,18 +22,18 @@
         }
 
         :root {
-            --primary: #ff4655;
-            --primary-dark: #e63946;
-            --secondary: #ffa500;
-            --bg-dark: #0d0d1e;
-            --bg-card: #1a1a2e;
-            --bg-lighter: #252541;
-            --text-primary: #ffffff;
-            --text-secondary: #b0b0c3;
-            --success: #00ff88;
-            --error: #ff4655;
-            --warning: #ffa500;
-            --border: #2d2d44;
+            --primary: #d946ef;  /* Bright Pink */
+            --primary-dark: #a21caf;  /* Deep Purple */
+            --secondary: #06b6d4;  /* Cyan */
+            --bg-dark: #0f0b1f;  /* Deep purple-black */
+            --bg-card: #251b3d;  /* Purple card */
+            --bg-lighter: #2d1f4a;  /* Light purple */
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: rgba(217, 70, 239, 0.2);
             
             /* Safe area insets for notch/curve displays */
             --safe-top: env(safe-area-inset-top);
@@ -44,7 +44,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-dark);
+            background: linear-gradient(135deg, #0f0b1f 0%, #1a0f2e 50%, #251435 100%);
+            background-attachment: fixed;
             color: var(--text-primary);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -59,7 +60,7 @@
             max-width: 100vw;
             width: 100%;
             margin: 0 auto;
-            background: var(--bg-dark);
+            background: transparent;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
@@ -502,19 +503,22 @@
             padding-bottom: calc(90px + var(--safe-bottom)); /* Space for bottom nav */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 10px; /* Perfect gap */
+            /* Medium card size */
+            min-height: 320px;
         }
 
+        /* Perfect square cards */
         .tournament-card {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
             border: 2px solid rgba(255, 70, 85, 0.2);
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            aspect-ratio: 1;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 1; /* Perfect square */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
         .tournament-card:active {
@@ -3320,11 +3324,14 @@
             const defaultBanner = `https://via.placeholder.com/300x300/1a1a2e/ff4655?text=${encodeURIComponent(modeName)}`;
             const banner = (bannerUrl && bannerUrl.trim()) ? bannerUrl : defaultBanner;
 
+            // Format match count as "1M", "2M", etc.
+            const matchCountText = totalMatches > 0 ? `${totalMatches}M` : '';
+
             return `
                 <div class="tournament-card" onclick="showModeMatches('${modeName}')">
                     <img src="${banner}" alt="${modeName}" class="tournament-card-image" onerror="this.src='${defaultBanner}'">
                     ${activeMatches > 0 ? `<div class="match-status-badge ongoing">▶️ ${activeMatches} LIVE</div>` : ''}
-                    <div class="mode-matches-badge">${totalMatches} Match${totalMatches > 1 ? 'es' : ''}</div>
+                    ${matchCountText ? `<div class="mode-matches-badge" style="top: 8px; left: 8px; right: auto; background: rgba(0, 0, 0, 0.8); color: white; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; position: absolute; z-index: 2;">${matchCountText}</div>` : ''}
                     <div class="tournament-card-label">${modeName}</div>
                 </div>
             `;
